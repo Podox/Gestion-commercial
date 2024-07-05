@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Client, Command, Offre
 
-# Register your models here.
+admin.site.register(Client)
+admin.site.register(Command)
+admin.site.register(Offre)
