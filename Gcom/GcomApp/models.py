@@ -28,3 +28,4 @@ class Offre(models.Model):
     def __str__(self):
         return f"Offre {self.id} for {self.client.prenom} {self.client.nom}"
     
+#gg
