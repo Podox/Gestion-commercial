@@ -20,3 +20,11 @@ class Command(models.Model):
 
     def __str__(self):
         return f"Commande {self.id} for {self.client}"
+
+class Offre(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    Offre = models.TextField()
+
+    def __str__(self):
+        return f"Offre {self.id} for {self.client.prenom} {self.client.nom}"
+    
