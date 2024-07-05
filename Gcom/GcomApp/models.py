@@ -23,7 +23,7 @@ class Command(models.Model):
 
 class Offre(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    description = models.TextField()
+    Offre = models.TextField()
 
     def __str__(self):
         return f"Offre {self.id} for {self.client.prenom} {self.client.nom}"
