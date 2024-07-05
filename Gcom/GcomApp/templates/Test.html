@@ -1,0 +1,47 @@
+<!-- myapp/templates/clients.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clients, Commands, and Offres</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Clients</h1>
+        <div class="accordion" id="clientsAccordion">
+            {% for client in clients %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ client.id }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ client.id }}" aria-expanded="true" aria-controls="collapse{{ client.id }}">
+                        {{ client.prenom }} {{ client.nom }} - {{ client.entreprise }}
+                    </button>
+                </h2>
+                <div id="collapse{{ client.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ client.id }}" data-bs-parent="#clientsAccordion">
+                    <div class="accordion-body">
+                        <p><strong>Email:</strong> {{ client.mail }}</p>
+                        <p><strong>Phone:</strong> {{ client.numero_telephone }}</p>
+                        <h3>Commands</h3>
+                        <ul class="list-group">
+                            {% for command in client.command_set.all %}
+                            <li class="list-group-item">{{ command.commande }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h3 class="mt-4">Offres</h3>
+                        <ul class="list-group">
+                            {% for offre in client.offre_set.all %}
+                            <li class="list-group-item">{{ offre.description }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
