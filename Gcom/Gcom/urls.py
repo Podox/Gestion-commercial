@@ -1,14 +1,15 @@
+# Gcom/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.decorators import login_required
+from GcomApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('GcomApp.urls')),
+    path('', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('index/', login_required(views.index), name='index'),  # Protect the index view
+    # Include the app's URLs
+    path('app/', include('GcomApp.urls')),
 ]
-
-# Serving media files during development
-from django.conf import settings
-from django.conf.urls.static import static
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
