@@ -140,9 +140,9 @@
                 <div class="row">
                     <div class="col-md-12 mt">
                         <div class="content-panel">
-                            <table class="table table-hover">
+                            <table class="table table-striped ">
                                 <h4><i class="fa fa-angle-right"></i> Hover Table</h4>
-                                
+                                <div id="copy-notification">Copied to clipboard!</div>
                                 <hr>
                                 <thead>
                                     <tr>
@@ -152,8 +152,8 @@
                                         <th>Company</th>
                                         <th>Email</th>
                                         <th>Phone</th>
-                                        <th>Commands</th>
-                                        <th>Offres</th>
+                                        <th>Status</th>
+                                        <th>Date Created</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,20 +165,13 @@
                                         <td class="copy-cell">{{ client.entreprise }}</td>
                                         <td class="copy-cell">{{ client.mail }}</td>
                                         <td class="copy-cell">{{ client.numero_telephone }}</td>
-                                        <td class="copy-cell">
-                                            <ul>
-                                                {% for command in client.command_set.all %}
-                                                <li>{{ command.commande }}</li>
-                                                {% endfor %}
-                                            </ul>
+                                        <td>
+                                            {% for status in client.status.all %}
+                                                {{ status.name }}
+                                                {% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
                                         </td>
-                                        <td class="copy-cell">
-                                            <ul>
-                                                {% for offre in client.offre_set.all %}
-                                                <li>{{ offre.description }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </td>
+                                        <td class="copy-cell">{{ client.date_creation }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
