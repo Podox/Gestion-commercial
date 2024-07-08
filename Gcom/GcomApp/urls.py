@@ -7,7 +7,7 @@ from . import views
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('', login_required(views.index), name='index'),  # Protect the index view
     path('client/', login_required(views.client_view), name='client'),
     # Add other URL patterns here

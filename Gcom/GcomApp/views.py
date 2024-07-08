@@ -24,8 +24,9 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
-    logout(request)
-    return redirect("login.html")
+    # Clear the session data
+    request.session.flush()
+    return render(request, 'login.html')
 
 @login_required
 def index(request):
