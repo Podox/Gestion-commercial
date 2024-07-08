@@ -10,5 +10,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('', login_required(views.index), name='index'),  # Protect the index view
     path('client/', login_required(views.client_view), name='client'),
+    path('clients/', views.client_list, name='client_list'),
     # Add other URL patterns here
 ]

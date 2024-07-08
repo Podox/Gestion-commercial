@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages  # Import messages
+from GcomApp.models import Client
 
 def login_view(request):
     if request.method == 'POST':
@@ -35,5 +36,10 @@ def index(request):
 @login_required
 def client_view(request):
     return render(request, 'client.html')
+
+@login_required
+def client_list(request):
+    clients = Client.objects.all()
+    return render(request, 'clients.html', {'clients': clients})
 
 # Add other views as needed
