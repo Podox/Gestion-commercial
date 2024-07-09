@@ -95,3 +95,31 @@ def client_timeline(request):
 def fournisseur_list(request):
     fournisseurs = Fournisseur.objects.all()
     return render(request, 'fournisseur.html', {'fournisseurs': fournisseurs})
+
+@login_required
+def fournisseur_timeline(request):
+    selected_fournisseur_id = request.GET.get('fournisseur_id')
+    fournisseurs = Fournisseur.objects.all()
+    selected_fournisseur = None
+    fournisseur_events = []
+
+    if selected_fournisseur_id:
+        selected_fournisseur = get_object_or_404(Fournisseur, id=selected_fournisseur_id)
+        commands = Command.objects.filter(fournisseur=selected_fournisseur).order_by('date_creation')
+
+        for command in commands:
+            fournisseur_events.append({
+                'date': command.date_creation,
+                'title': f'Commande {command.id}',
+                'description': command.commande
+            })
+
+        fournisseur_events.sort(key=lambda x: x['date'])
+
+    context = {
+        'fournisseurs': fournisseurs,
+        'selected_fournisseur': selected_fournisseur,
+        'fournisseur_events': fournisseur_events
+    }
+
+    return render(request, 'fournisseur_timeline.html', context)

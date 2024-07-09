@@ -13,5 +13,6 @@ urlpatterns = [
     path('clients/', views.client_list, name='client_list'),
     path('client/timeline/', views.client_timeline, name='client_timeline'),
     path('fournisseur/', views.fournisseur_list, name='fournisseur_list'),
+    path('fournisseur/timeline/', views.fournisseur_timeline, name='fournisseur_timeline'),
     # Add other URL patterns here
 ]

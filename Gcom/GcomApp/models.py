@@ -48,12 +48,12 @@ class Offre(models.Model):
 
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=100)
-    prenom = models.CharField(max_length=100, null=True, blank=True)  # Add first name
+    prenom = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField()
-    adresse = models.CharField(max_length=200, null=True, blank=True)  # Add address
-    numero_telephone = models.CharField(max_length=15, null=True, blank=True)  # Add phone number
+    adresse = models.CharField(max_length=200, null=True, blank=True)
+    numero_telephone = models.CharField(max_length=15, null=True, blank=True)
     date_ajout = models.DateTimeField(default=timezone.now)
-    commande = models.ForeignKey('Command', on_delete=models.CASCADE)
+    commande = models.ManyToManyField(Command)  # ManyToManyField for multiple commandes
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"

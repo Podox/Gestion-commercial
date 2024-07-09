@@ -78,7 +78,16 @@
                             <i class="fa fa-dashboard"></i>
                             <span>Dashboard</span>
                         </a>
-
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-user"></i>
+                                <span>Client</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{% url 'client_timeline' %}">Time-Line</a></li>
+                                <li><a href="buttons.html">Gerer</a></li>
+                            </ul>
+                        </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
                             <i class="fa fa-cogs"></i>
@@ -87,6 +96,26 @@
                         <ul class="sub">
                             <li><a href="calendar.html">Afficher</a></li>
                             <li><a href="gallery.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-money"></i>
+                            <span>Commande</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'client' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>Offre</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'client' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
                         </ul>
                     </li>
 
