@@ -45,5 +45,16 @@ class Offre(models.Model):
 
     def __str__(self):
         return f"Offre {self.id} for {self.client.prenom} {self.client.nom}"
-    
+
+class Fournisseur(models.Model):
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100, null=True, blank=True)  # Add first name
+    email = models.EmailField()
+    adresse = models.CharField(max_length=200, null=True, blank=True)  # Add address
+    numero_telephone = models.CharField(max_length=15, null=True, blank=True)  # Add phone number
+    date_ajout = models.DateTimeField(default=timezone.now)
+    commande = models.ForeignKey('Command', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nom} {self.prenom}"
 #gg

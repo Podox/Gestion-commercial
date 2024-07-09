@@ -1,11 +1,11 @@
 # GcomApp/views.py
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages  # Import messages
-from GcomApp.models import Client
+from GcomApp.models import Client, Command, Offre, Fournisseur
 
 def login_view(request):
     if request.method == 'POST':
@@ -42,4 +42,56 @@ def client_list(request):
     clients = Client.objects.all()
     return render(request, 'clients.html', {'clients': clients})
 
-# Add other views as needed
+@login_required
+def client_timeline(request):
+    # Get the selected client ID from the query parameters
+    selected_client_id = request.GET.get('client_id')
+
+    # Fetch all clients to populate the dropdown
+    clients = Client.objects.all()
+
+    # Initialize variables for the selected client and their events
+    selected_client = None
+    client_events = []
+
+    if selected_client_id:
+        # Fetch the selected client based on the ID
+        selected_client = get_object_or_404(Client, id=selected_client_id)
+
+        # Fetch commands and offers for the selected client, ordered by creation date
+        commands = Command.objects.filter(client=selected_client).order_by('date_creation')
+        offres = Offre.objects.filter(client=selected_client).order_by('date_creation')
+
+        # Collect command events
+        for command in commands:
+            client_events.append({
+                'date': command.date_creation,
+                'title': f'Commande {command.id}',
+                'description': command.commande
+            })
+
+        # Collect offer events
+        for offre in offres:
+            client_events.append({
+                'date': offre.date_creation,
+                'title': f'Offre {offre.id}',
+                'description': offre.description
+            })
+
+        # Sort events by date
+        client_events.sort(key=lambda x: x['date'])
+
+    # Prepare the context for the template
+    context = {
+        'clients': clients,
+        'selected_client': selected_client,
+        'client_events': client_events
+    }
+
+    # Render the template with the context
+    return render(request, 'client_timeline.html', context)
+
+@login_required
+def fournisseur_list(request):
+    fournisseurs = Fournisseur.objects.all()
+    return render(request, 'fournisseur.html', {'fournisseurs': fournisseurs})

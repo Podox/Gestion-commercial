@@ -1,0 +1,52 @@
+
+.timeline {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline-item {
+    background: white;
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.timeline-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.date, .time {
+    display: block;
+}
+
+.timeline-title {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+}
+
+.timeline-description {
+    margin: 0;
+    color: #333;
+}
+
+@media (min-width: 600px) {
+    .timeline-item {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .timeline-date {
+        margin-right: 20px;
+        margin-bottom: 0;
+    }
+
+    .timeline-content {
+        flex-grow: 1;
+    }
+}
