@@ -24,6 +24,23 @@
     <link href="{% static 'assets/css/style-responsive.css' %}" rel="stylesheet">
 
     <script src="{% static 'assets/js/chart-master/Chart.js' %}"></script>
+
+    <style>
+        .copied {
+            background-color: #b1f1c0;
+        }
+        #copy-notification {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #8ee9a3;
+            color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,63 +67,56 @@
         <aside>
             <div id="sidebar" class="nav-collapse ">
                 <!-- sidebar menu start-->
-                
-
-
-                    <ul class="sidebar-menu" id="nav-accordion">
-                        <h5 class="centered">Menu</h5>
-                        <li class="mt">
-
-                            <a class="active" href="{% url 'index' %}">
-                                <i class="fa fa-dashboard"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-user"></i>
-                                <span>Client</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{% url 'client_list' %}">Afficher</a></li>
-                                
-                                <li><a href="buttons.html">Gerer</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-truck"></i>
-                                <span>Fournisseur</span>
-                            </a>
-                            <ul class="sub">
-                            
-                                <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
-                                <li><a href="buttons.html">Gerer</a></li>
-                            </ul>
-                        </li>
-    
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-money"></i>
-                                <span>Commande</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{% url 'client' %}">Afficher</a></li>
-                                <li><a href="buttons.html">Gerer</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-envelope"></i>
-                                <span>Offre</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{% url 'client' %}">Afficher</a></li>
-                                <li><a href="buttons.html">Gerer</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <!-- sidebar menu end-->
+                <ul class="sidebar-menu" id="nav-accordion">
+                    <h5 class="centered">Menu</h5>
+                    <li class="mt">
+                        <a class="active" href="{% url 'index' %}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-user"></i>
+                            <span>Client</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-truck"></i>
+                            <span>Fournisseur</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-money"></i>
+                            <span>Commande</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'commande_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>Offre</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'offre_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- sidebar menu end-->
             </div>
         </aside>
         <!--sidebar end-->
@@ -114,12 +124,14 @@
         <!--main content start-->
         <section id="main-content">
             <section class="wrapper">
+                
                 <h3><i class="fa fa-angle-right"></i> Fournisseur Data</h3>
                 <div class="row">
                     <div class="col-md-12 mt">
                         <div class="content-panel">
                             <table class="table table-striped">
                                 <h4><i class="fa fa-angle-right"></i> Fournisseur Table</h4>
+                                
                                 <hr>
                                 <thead>
                                     <tr>
@@ -136,12 +148,12 @@
                                     {% for fournisseur in fournisseurs %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ fournisseur.nom }}</td>
-                                        <td>{{ fournisseur.prenom }}</td>
-                                        <td>{{ fournisseur.email }}</td>
-                                        <td>{{ fournisseur.adresse }}</td>
-                                        <td>{{ fournisseur.numero_telephone }}</td>
-                                        <td>{{ fournisseur.date_ajout }}</td>
+                                        <td class="copy-cell">{{ fournisseur.nom }}</td>
+                                        <td class="copy-cell">{{ fournisseur.prenom }}</td>
+                                        <td class="copy-cell">{{ fournisseur.email }}</td>
+                                        <td class="copy-cell">{{ fournisseur.adresse }}</td>
+                                        <td class="copy-cell">{{ fournisseur.numero_telephone }}</td>
+                                        <td class="copy-cell">{{ fournisseur.date_ajout }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -164,5 +176,6 @@
 
     <!--common script for all pages-->
     <script src="{% static 'assets/js/common-scripts.js' %}"></script>
+
 </body>
 </html>

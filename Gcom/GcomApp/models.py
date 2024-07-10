@@ -26,13 +26,13 @@ class Command(models.Model):
     CLIENT_TYPE_CHOICES = [
         ('Prestation', 'Prestation'),
         ('Materiel', 'Materiel'),
-        ('Les-deux', 'Les-deux'),
+        ('Materiel et Prestation', 'Materiel et Prestation'),
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     commande = models.TextField()
     date_creation = models.DateTimeField(auto_now_add=True)
-    type_commande = models.CharField(max_length=20, choices=CLIENT_TYPE_CHOICES, default='Prestation')
+    type_commande = models.CharField(max_length=30, choices=CLIENT_TYPE_CHOICES, default='Prestation')
     date_creation = models.DateTimeField(default=timezone.now)
     
     def __str__(self):

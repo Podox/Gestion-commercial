@@ -66,7 +66,7 @@ def client_timeline(request):
         for command in commands:
             client_events.append({
                 'date': command.date_creation,
-                'title': f'Commande {command.id}',
+                'title': f"Commande de type: {command.type_commande}",
                 'description': command.commande
             })
 
@@ -79,7 +79,7 @@ def client_timeline(request):
             })
 
         # Sort events by date
-        client_events.sort(key=lambda x: x['date'])
+        client_events.sort(key=lambda x: x['date'], reverse=True)
 
     # Prepare the context for the template
     context = {
@@ -114,7 +114,7 @@ def fournisseur_timeline(request):
                 'description': command.commande
             })
 
-        fournisseur_events.sort(key=lambda x: x['date'])
+        fournisseur_events.sort(key=lambda x: x['date'], reverse=True)
 
     context = {
         'fournisseurs': fournisseurs,
@@ -123,3 +123,13 @@ def fournisseur_timeline(request):
     }
 
     return render(request, 'fournisseur_timeline.html', context)
+
+@login_required
+def commandes_view(request):
+    commandes = Command.objects.all()
+    return render(request, 'commande.html', {'commandes': commandes})
+
+@login_required
+def offre_list(request):
+    offres = Offre.objects.all()
+    return render(request, 'offre.html', {'offres': offres})
