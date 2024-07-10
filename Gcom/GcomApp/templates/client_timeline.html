@@ -62,7 +62,7 @@
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>DASHGUM FREE</b></a>
+            <a href="index.html" class="logo"><b>Agora Technology</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
             </div>
@@ -82,19 +82,17 @@
         <aside>
             <div id="sidebar" class="nav-collapse ">
                 <!-- sidebar menu start-->
-                <ul class="sidebar-menu" id="nav-accordion">
+                
 
 
-                    <h5 class="centered">Cristiano Ronaldo</h5>
+                    <ul class="sidebar-menu" id="nav-accordion">
+                        <h5 class="centered">Menu</h5>
+                        <li class="mt">
 
-
-
-                    <li class="mt">
-
-                        <a class="active" href="{% url 'index' %}">
-                            <i class="fa fa-dashboard"></i>
-                            <span>Dashboard</span>
-                        </a>
+                            <a class="active" href="{% url 'index' %}">
+                                <i class="fa fa-dashboard"></i>
+                                <span>Dashboard</span>
+                            </a>
                         <li class="sub-menu">
                             <a href="javascript:;">
                                 <i class="fa fa-user"></i>
@@ -102,19 +100,43 @@
                             </a>
                             <ul class="sub">
                                 <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                                
                                 <li><a href="buttons.html">Gerer</a></li>
                             </ul>
                         </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
-                            <i class="fa fa-cogs"></i>
-                            <span>Employe</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="calendar.html">Afficher</a></li>
-                            <li><a href="gallery.html">Gerer</a></li>
-                        </ul>
-                    </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-truck"></i>
+                                <span>Fournisseur</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
+                                <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
+                                <li><a href="buttons.html">Gerer</a></li>
+                            </ul>
+                        </li>
+    
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-money"></i>
+                                <span>Commande</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{% url 'client' %}">Afficher</a></li>
+                                <li><a href="buttons.html">Gerer</a></li>
+                            </ul>
+                        </li>
+                        <li class="sub-menu">
+                            <a href="javascript:;">
+                                <i class="fa fa-envelope"></i>
+                                <span>Offre</span>
+                            </a>
+                            <ul class="sub">
+                                <li><a href="{% url 'client' %}">Afficher</a></li>
+                                <li><a href="buttons.html">Gerer</a></li>
+                            </ul>
+                        </li>
+                    </ul>
 
                     <!-- sidebar menu end-->
             </div>
@@ -131,7 +153,7 @@
             <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
         </div>
       <!--logo start-->
-      <a href="index.html" class="logo"><b>DASHGUM FREE</b></a>
+      <a href="index.html" class="logo"><b>Agora Technology</b></a>
       <!--logo end-->
       
       <div class="top-menu">
