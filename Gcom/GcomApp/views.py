@@ -4,8 +4,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.contrib import messages  # Import messages
-from GcomApp.models import Client, Command, Offre, Fournisseur
+from django.contrib import messages 
+from GcomApp.models import Client, Command, Offre, Fournisseur,Status
+from django.db.models import Count
+from django.utils import timezone
+from django.db.models.functions import TruncMonth
 
 def login_view(request):
     if request.method == 'POST':
@@ -31,7 +34,66 @@ def logout_view(request):
 
 @login_required
 def index(request):
-    return render(request, 'index.html')
+    # Get the count of clients
+    client_count = Client.objects.count()
+
+    # Get the count of commands
+    command_count = Command.objects.count()
+
+    # Get the count of fournisseurs
+    fournisseur_count = Fournisseur.objects.count()
+
+    # Get the count of offers
+    offre_count = Offre.objects.count()
+
+    # Get the count of clients with a status "Commande confirmer"
+    confirmed_status = Status.objects.filter(name="Commande confirmer").first()
+    if confirmed_status:
+        confirmed_clients_count = Client.objects.filter(status=confirmed_status).distinct().count()
+    else:
+        confirmed_clients_count = 0
+
+    # Get the count of clients created per month for the current year
+    current_year = timezone.now().year
+    clients_by_month = (
+        Client.objects.filter(date_creation__year=current_year)
+        .annotate(month=TruncMonth('date_creation'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    # Get the count of commands created per month for the current year
+    commands_by_month = (
+        Command.objects.filter(date_creation__year=current_year)
+        .annotate(month=TruncMonth('date_creation'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    # Format the data for the client creation chart
+    monthly_client_data = {month: 0 for month in range(1, 13)}
+    for entry in clients_by_month:
+        monthly_client_data[entry['month'].month] = entry['count']
+
+    # Format the data for the command creation chart
+    monthly_command_data = {month: 0 for month in range(1, 13)}
+    for entry in commands_by_month:
+        monthly_command_data[entry['month'].month] = entry['count']
+
+    # Context dictionary to pass data to the template
+    context = {
+        'client_count': client_count,
+        'command_count': command_count,
+        'fournisseur_count': fournisseur_count,
+        'offre_count': offre_count,
+        'confirmed_clients_count': confirmed_clients_count,
+        'monthly_client_data': monthly_client_data,
+        'monthly_command_data': monthly_command_data,
+    }
+
+    return render(request, 'index.html', context)
 
 @login_required
 def client_view(request):

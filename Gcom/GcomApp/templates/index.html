@@ -8,7 +8,7 @@
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>DASHGUM - FREE Bootstrap Admin Template</title>
+    <title>Dashboard</title>
 
     {% load static %}
 
@@ -123,20 +123,143 @@
             MAIN CONTENT
             *********************************************************************************************************************************************************** -->
         <!--main content start-->
+        <!-- **********************************************************************************************************************************************************
+    MAIN CONTENT
+*********************************************************************************************************************************************************** -->
+<!--main content start-->
+<section id="main-content">
+    <section class="wrapper container-fluid">
+        <div class="row">
+            <div class="col-lg-12 main-chart">
+                <div class="row mtbox">
+                    <div class="col-md-2 col-sm-2 col-md-offset-1 box0">
+                        <div class="box1">
+                            <span class="fa fa-user"></span>
+                            <h3>{{ client_count }}</h3>
+                        </div>
+                        <p>Nombre Client</p>
+                    </div>
+                    <div class="col-md-2 col-sm-2 box0">
+                        <div class="box1">
+                            <span class="fa fa-money"></span>
+                            <h3>{{ command_count }}</h3>
+                        </div>
+                        <p>Nombre Command</p>
+                    </div>
+                    <div class="col-md-2 col-sm-2 box0">
+                        <div class="box1">
+                            <span class="fa fa-truck"></span>
+                            <h3>{{ fournisseur_count }}</h3>
+                        </div>
+                        <p>Nombre Fournisseur</p>
+                    </div>
+                    <div class="col-md-2 col-sm-2 box0">
+                        <div class="box1">
+                            <span class="fa fa-envelope"></span>
+                            <h3>{{ offre_count }}</h3>
+                        </div>
+                        <p>Nombre Offre</p>
+                    </div>
+                    <div class="col-md-2 col-sm-2 box0">
+                        <div class="box1">
+                            <span class="fa fa-signal"></span>
+                            <h3>{{ confirmed_clients_count }}</h3>
+                        </div>
+                        <p>Nombre de clients avec un status "Commande confirmer"</p>
+                    </div>
+                </div><!-- /row mt -->
 
+                <!--CUSTOM CHARTS START -->
+                <div class="border-head">
+                    <h3>Clients Créés par Mois</h3>
+                </div>
+                <canvas id="clientsChart" width="400" height="200"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    var ctxClients = document.getElementById('clientsChart').getContext('2d');
+                    var clientsChart = new Chart(ctxClients, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            datasets: [{
+                                label: 'Clients créés',
+                                data: [
+                                    {{ monthly_client_data.1 }},
+                                    {{ monthly_client_data.2 }},
+                                    {{ monthly_client_data.3 }},
+                                    {{ monthly_client_data.4 }},
+                                    {{ monthly_client_data.5 }},
+                                    {{ monthly_client_data.6 }},
+                                    {{ monthly_client_data.7 }},
+                                    {{ monthly_client_data.8 }},
+                                    {{ monthly_client_data.9 }},
+                                    {{ monthly_client_data.10 }},
+                                    {{ monthly_client_data.11 }},
+                                    {{ monthly_client_data.12 }}
+                                ],
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                </script>
 
-        <!--main content end-->
-        <!--footer start-->
-        <footer class="site-footer">
-            <div class="text-center">
-                2014 - Alvarez.is
-                <a href="index.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
-            </div>
-        </footer>
-        <!--footer end-->
+                <div class="border-head mt-4">
+                    <h3>Commandes Créées par Mois</h3>
+                </div>
+                <canvas id="commandsChart" width="400" height="200"></canvas>
+                <script>
+                    var ctxCommands = document.getElementById('commandsChart').getContext('2d');
+                    var commandsChart = new Chart(ctxCommands, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            datasets: [{
+                                label: 'Commandes créées',
+                                data: [
+                                    {{ monthly_command_data.1 }},
+                                    {{ monthly_command_data.2 }},
+                                    {{ monthly_command_data.3 }},
+                                    {{ monthly_command_data.4 }},
+                                    {{ monthly_command_data.5 }},
+                                    {{ monthly_command_data.6 }},
+                                    {{ monthly_command_data.7 }},
+                                    {{ monthly_command_data.8 }},
+                                    {{ monthly_command_data.9 }},
+                                    {{ monthly_command_data.10 }},
+                                    {{ monthly_command_data.11 }},
+                                    {{ monthly_command_data.12 }}
+                                ],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                </script>
+                <!--CUSTOM CHARTS END-->
+                
+            </div><!-- /col-lg-12 END SECTION MIDDLE -->
+        </div><!-- /row -->
     </section>
+</section>
+<!--main content end-->
+
 
     <!-- js placed at the end of the document so the pages load faster -->
     <script src="{% static 'assets/js/jquery.js' %}"></script>
