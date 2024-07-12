@@ -195,3 +195,80 @@ def commandes_view(request):
 def offre_list(request):
     offres = Offre.objects.all()
     return render(request, 'offre.html', {'offres': offres})
+
+
+def Gclient_view(request):
+    clients = Client.objects.all()
+    statuses = Status.objects.all()  # Fetch all statuses to populate the dropdown
+    return render(request, 'Gclient.html', {'clients': clients, 'statuses': statuses})
+
+@login_required
+def client_add(request):
+    if request.method == 'POST':
+        prenom = request.POST.get('prenom')
+        nom = request.POST.get('nom')
+        entreprise = request.POST.get('entreprise')
+        mail = request.POST.get('mail')
+        numero_telephone = request.POST.get('numero_telephone')
+        status_ids = request.POST.getlist('status')
+        client = Client.objects.create(
+            prenom=prenom,
+            nom=nom,
+            entreprise=entreprise,
+            mail=mail,
+            numero_telephone=numero_telephone
+        )
+        client.status.set(status_ids)
+        client.save()
+        response_data = {
+            'id': client.id,
+            'prenom': client.prenom,
+            'nom': client.nom,
+            'entreprise': client.entreprise,
+            'mail': client.mail,
+            'numero_telephone': client.numero_telephone,
+            'date_creation': client.date_creation,
+            'status': [status.name for status in client.status.all()]
+        }
+        return JsonResponse(response_data)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def client_edit(request, client_id):
+    client = get_object_or_404(Client, id=client_id)
+    if request.method == 'POST':
+        client.prenom = request.POST.get('prenom')
+        client.nom = request.POST.get('nom')
+        client.entreprise = request.POST.get('entreprise')
+        client.mail = request.POST.get('mail')
+        client.numero_telephone = request.POST.get('numero_telephone')
+        status_ids = request.POST.getlist('status')
+        client.status.set(status_ids)
+        client.save()
+        response_data = {
+            'id': client.id,
+            'prenom': client.prenom,
+            'nom': client.nom,
+            'entreprise': client.entreprise,
+            'mail': client.mail,
+            'numero_telephone': client.numero_telephone,
+            'date_creation': client.date_creation,
+            'status': [status.name for status in client.status.all()]
+        }
+        return JsonResponse(response_data)
+    response_data = {
+        'id': client.id,
+        'prenom': client.prenom,
+        'nom': client.nom,
+        'entreprise': client.entreprise,
+        'mail': client.mail,
+        'numero_telephone': client.numero_telephone,
+        'status': [status.id for status in client.status.all()]
+    }
+    return JsonResponse(response_data)
+
+@login_required
+def client_delete(request, client_id):
+    client = get_object_or_404(Client, id=client_id)
+    client.delete()
+    return JsonResponse({'result': 'ok'})

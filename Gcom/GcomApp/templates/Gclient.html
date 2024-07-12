@@ -8,7 +8,7 @@
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>DASHGUM - FREE Bootstrap Admin Template</title>
+    <title>Client Management</title>
 
     {% load static %}
 
@@ -24,171 +24,345 @@
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/style-responsive.css' %}" rel="stylesheet">
 
-    <script src="{% static 'assets/js/chart-master/Chart.js' %}"></script>
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <script src="{% static 'assets/js/jquery.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 </head>
 
 <body>
 
     <section id="container">
-        <!-- **********************************************************************************************************************************************************
-        TOP BAR CONTENT & NOTIFICATIONS
-        *********************************************************************************************************************************************************** -->
-        <!--header start-->
+        <!-- TOP BAR CONTENT & NOTIFICATIONS -->
         <header class="header black-bg">
             <div class="sidebar-toggle-box">
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>Agora Technology</b></a>
+            <a href="{% url 'index' %}" class="logo"><b>Agora Technology</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
             </div>
             <div class="top-menu">
                 <ul class="nav pull-right top-menu">
-                    <li><a class="logout"href="{% url 'logout' %}">Logout</a></li>
+                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
                 </ul>
             </div>
         </header>
-        
         <!--header end-->
 
-        <!-- **********************************************************************************************************************************************************
-        MAIN SIDEBAR MENU
-        *********************************************************************************************************************************************************** -->
-        <!--sidebar start-->
+        <!-- MAIN SIDEBAR MENU -->
         <aside>
             <div id="sidebar" class="nav-collapse ">
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
-
-
                     <h5 class="centered">Menu</h5>
-
-
-
-                    <li class="mt">
-
-                        <a class="active" href="{% url 'index' %}">
-                            <i class="fa fa-dashboard"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        
                     <li class="sub-menu">
                         <a href="javascript:;">
-                            <i class="fa fa-cogs"></i>
-                            <span>Employe</span>
+                            <i class="fa fa-user"></i>
+                            <span>Client</span>
                         </a>
                         <ul class="sub">
-                            <li><a href="calendar.html">Afficher</a></li>
-                            <li><a href="gallery.html">Gerer</a></li>
+                            <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'client_timeline' %}">Timeline</a></li>
+                            <li><a href="{% url 'Gclient' %}">Gerer</a></li>
                         </ul>
                     </li>
-
-                    <!-- sidebar menu end-->
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-truck"></i>
+                            <span>Fournisseur</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-money"></i>
+                            <span>Commande</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'commande_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>Offre</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'offre_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </aside>
         <!--sidebar end-->
 
-        <!-- **********************************************************************************************************************************************************
-        MAIN CONTENT
-        *********************************************************************************************************************************************************** -->
-        <!--main content start-->
+        <!-- MAIN CONTENT -->
+        <section id="main-content">
+            <section class="wrapper">
+                <h3><i class="fa fa-angle-right"></i> Gestion des Clients</h3>
+                <div class="row mt">
+                    <div class="col-md-12">
+                        <div class="content-panel">
+                            <table class="table table-striped table-advance table-hover">
+                                <hr>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Prénom</th>
+                                        <th>Nom</th>
+                                        <th>Entreprise</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Date de Création</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientTableBody">
+                                    {% for client in clients %}
+                                    <tr id="client-{{ client.id }}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ client.prenom }}</td>
+                                        <td>{{ client.nom }}</td>
+                                        <td>{{ client.entreprise }}</td>
+                                        <td>{{ client.mail }}</td>
+                                        <td>{{ client.numero_telephone }}</td>
+                                        <td>{{ client.date_creation }}</td>
+                                        <td>
+                                            {% for status in client.status.all %}
+                                                {{ status.name }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-xs add-client" data-toggle="modal" data-target="#addClientModal"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-primary btn-xs edit-client" data-id="{{ client.id }}"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs delete-client" data-id="{{ client.id }}"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div><!-- /content-panel -->
+                    </div><!-- /col-md-12 -->
+                </div><!-- /row -->
+
+                <!-- Add Client Modal -->
+                <div class="modal fade" id="addClientModal" tabindex="-1" role="dialog" aria-labelledby="addClientModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="addClientModalLabel">Ajouter un Client</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addClientForm">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    <div class="form-group">
+                                        <label for="prenom">Prénom</label>
+                                        <input type="text" class="form-control" id="prenom" name="prenom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nom">Nom</label>
+                                        <input type="text" class="form-control" id="nom" name="nom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="entreprise">Entreprise</label>
+                                        <input type="text" class="form-control" id="entreprise" name="entreprise" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mail">Email</label>
+                                        <input type="email" class="form-control" id="mail" name="mail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="numero_telephone">Téléphone</label>
+                                        <input type="text" class="form-control" id="numero_telephone" name="numero_telephone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status">Status (choix multiples)</label>
+                                        <select multiple class="form-control" id="status" name="status">
+                                            {% for status in statuses %}
+                                            <option value="{{ status.id }}">{{ status.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Client Modal -->
+                <div class="modal fade" id="editClientModal" tabindex="-1" role="dialog" aria-labelledby="editClientModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="editClientModalLabel">Modifier le Client</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editClientForm">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    <input type="hidden" id="edit-client-id" name="id">
+                                    <div class="form-group">
+                                        <label for="edit-prenom">Prénom</label>
+                                        <input type="text" class="form-control" id="edit-prenom" name="prenom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-nom">Nom</label>
+                                        <input type="text" class="form-control" id="edit-nom" name="nom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-entreprise">Entreprise</label>
+                                        <input type="text" class="form-control" id="edit-entreprise" name="entreprise" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-mail">Email</label>
+                                        <input type="email" class="form-control" id="edit-mail" name="mail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-numero_telephone">Téléphone</label>
+                                        <input type="text" class="form-control" id="edit-numero_telephone" name="numero_telephone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-status">Status</label>
+                                        <select multiple class="form-control" id="edit-status" name="status">
+                                            {% for status in statuses %}
+                                            <option value="{{ status.id }}">{{ status.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section><!-- /wrapper -->
+        </section><!-- /MAIN CONTENT -->
 
 
-        <!--main content end-->
-        <!--footer start-->
-        <footer class="site-footer">
-            <div class="text-center">
-                2014 - Alvarez.is
-                <a href="index.html#" class="go-top">
-                    <i class="fa fa-angle-up"></i>
-                </a>
-            </div>
-        </footer>
-        <!--footer end-->
-    </section>
-
-    <body>
-        <!-- js placed at the end of the document so the pages load faster -->
-        <script src="{% static 'assets/js/jquery.js' %}"></script>
-        <script src="{% static 'assets/js/jquery-1.8.3.min.js' %}"></script>
-        <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-        <script class="include" type="text/javascript"
-            src="{% static 'assets/js/jquery.dcjqaccordion.2.7.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.scrollTo.min.js' %}"></script>
-        <script src="{% static 'assets/js/jquery.nicescroll.js' %}" type="text/javascript"></script>
-        <script src="{% static 'assets/js/jquery.sparkline.js' %}"></script>
-
-        <!--common script for all pages-->
-        <script src="{% static 'assets/js/common-scripts.js' %}"></script>
-
-        <script type="text/javascript" src="{% static 'assets/js/gritter/js/jquery.gritter.js' %}"></script>
-        <script type="text/javascript" src="{% static 'assets/js/gritter-conf.js' %}"></script>
-
-        <!--script for this page-->
-        <script src="{% static 'assets/js/sparkline-chart.js' %}"></script>
-        <script src="{% static 'assets/js/zabuto_calendar.js' %}"></script>
-
-        <!-- <script type="text/javascript">
-                $(document).ready(function () {
-                    var unique_id = $.gritter.add({
-                        // (string | mandatory) the heading of the notification
-                        title: 'Welcome to Dashgum!',
-                        // (string | mandatory) the text inside the notification
-                        text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
-                        // (string | optional) the image to display on the left
-                        image: "{% static 'assets/img/ui-sam.jpg' %}",
-                        // (bool | optional) if you want it to fade out on its own or just sit there
-                        sticky: true,
-                        // (int | optional) the time you want it to be alive for before fading out
-                        time: '',
-                        // (string | optional) the class name you want to apply to that specific message
-                        class_name: 'my-sticky-class'
-                    });
-
-                    return false;
-                });
-        </script> -->
-
-        <script type="application/javascript">
-            $(document).ready(function () {
-                $("#date-popover").popover({ html: true, trigger: "manual" });
-                $("#date-popover").hide();
-                $("#date-popover").click(function (e) {
-                    $(this).hide();
-                });
-
-                $("#my-calendar").zabuto_calendar({
-                    action: function () {
-                        return myDateFunction(this.id, false);
+    <!-- JavaScript for handling AJAX requests and modals -->
+    <script>
+        $(document).ready(function () {
+            // Handle add client form submission
+            $('#addClientForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "client_add" %}',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#addClientModal').modal('hide');
+                        $('#clientTableBody').append(`
+                            <tr id="client-${response.id}">
+                                <td>${response.id}</td>
+                                <td>${response.prenom}</td>
+                                <td>${response.nom}</td>
+                                <td>${response.entreprise}</td>
+                                <td>${response.mail}</td>
+                                <td>${response.numero_telephone}</td>
+                                <td>${response.date_creation}</td>
+                                <td>${response.status.join(', ')}</td>
+                                <td>
+                                    <button class="btn btn-success btn-xs add-client" data-toggle="modal" data-target="#addClientModal"><i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-primary btn-xs edit-client" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+                                    <button class="btn btn-danger btn-xs delete-client" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+                                </td>
+                            </tr>
+                        `);
                     },
-                    action_nav: function () {
-                        return myNavFunction(this.id);
-                    },
-                    ajax: {
-                        url: "show_data.php?action=1",
-                        modal: true
-                    },
-                    legend: [
-                        { type: "text", label: "Special event", badge: "00" },
-                        { type: "block", label: "Regular event" }
-                    ]
+                    error: function (response) {
+                        alert('Failed to add client');
+                    }
                 });
             });
 
-            function myNavFunction(id) {
-                $("#date-popover").hide();
-                var nav = $("#" + id).data("navigation");
-                var to = $("#" + id).data("to");
-                console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
-            }
-        </script>
-    </body>
+            // Handle edit client button click
+            $('#clientTableBody').on('click', '.edit-client', function () {
+                const clientId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: `/app/clients/${clientId}/edit/`,
+                    success: function (response) {
+                        $('#edit-client-id').val(response.id);
+                        $('#edit-prenom').val(response.prenom);
+                        $('#edit-nom').val(response.nom);
+                        $('#edit-entreprise').val(response.entreprise);
+                        $('#edit-mail').val(response.mail);
+                        $('#edit-numero_telephone').val(response.numero_telephone);
+                        $('#edit-status').val(response.status);
+                        $('#editClientModal').modal('show');
+                    },
+                    error: function (response) {
+                        alert('Failed to fetch client data');
+                    }
+                });
+            });
 
-</html> 
+            // Handle edit client form submission
+            $('#editClientForm').submit(function (e) {
+                e.preventDefault();
+                const clientId = $('#edit-client-id').val();
+                $.ajax({
+                    type: 'POST',
+                    url: `/app/clients/${clientId}/edit/`,
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#editClientModal').modal('hide');
+                        $(`#client-${clientId}`).replaceWith(`
+                            <tr id="client-${response.id}">
+                                <td>${response.id}</td>
+                                <td>${response.prenom}</td>
+                                <td>${response.nom}</td>
+                                <td>${response.entreprise}</td>
+                                <td>${response.mail}</td>
+                                <td>${response.numero_telephone}</td>
+                                <td>${response.date_creation}</td>
+                                <td>${response.status.join(', ')}</td>
+                                <td>
+                                    <button class="btn btn-success btn-xs add-client" data-toggle="modal" data-target="#addClientModal"><i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-primary btn-xs edit-client" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+                                    <button class="btn btn-danger btn-xs delete-client" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+                                </td>
+                            </tr>
+                        `);
+                    },
+                    error: function (response) {
+                        alert('Failed to edit client');
+                    }
+                });
+            });
+
+            // Handle delete client button click
+            $('#clientTableBody').on('click', '.delete-client', function () {
+                const clientId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this client?')) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/app/clients/${clientId}/delete/`,
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            $(`#client-${clientId}`).remove();
+                        },
+                        error: function (response) {
+                            alert('Failed to delete client');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
