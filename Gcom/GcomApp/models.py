@@ -2,6 +2,20 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.db import models
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
+
+class Service(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
 
 class Status(models.Model):
     name = models.CharField(max_length=100)
@@ -30,14 +44,29 @@ class Command(models.Model):
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    commande = models.TextField()
     date_creation = models.DateTimeField(auto_now_add=True)
     type_commande = models.CharField(max_length=30, choices=CLIENT_TYPE_CHOICES, default='Prestation')
-    date_creation = models.DateTimeField(default=timezone.now)
-    
+    products = models.ManyToManyField(Product, through='CommandeProduct', related_name='commands')
+    services = models.ManyToManyField(Service, through='CommandeService', related_name='commands')
+
     def __str__(self):
         return f"Commande {self.id} for {self.client}"
 
+class CommandeProduct(models.Model):
+    command = models.ForeignKey(Command, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} (x{self.quantity}) in Commande {self.command.id}"
+
+class CommandeService(models.Model):
+    command = models.ForeignKey(Command, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.service.name} (x{self.quantity}) in Commande {self.command.id}"
 class Offre(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     description = models.TextField()
