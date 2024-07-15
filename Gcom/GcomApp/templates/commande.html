@@ -143,8 +143,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Client</th>
-                                        <th>Commande</th>
                                         <th>Type</th>
+                                        <th>Products</th>
+                                        <th>Services</th>
                                         <th>Date Created</th>
                                     </tr>
                                 </thead>
@@ -152,10 +153,19 @@
                                     {% for commande in commandes %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td class="copy-cell">{{ commande.client }}</td>
-                                        <td class="copy-cell">{{ commande.commande }}</td>
-                                        <td class="copy-cell">{{ commande.get_type_commande_display }}</td>
-                                        <td class="copy-cell">{{ commande.date_creation }}</td>
+                                        <td >{{ commande.client }}</td>
+                                        <td >{{ commande.get_type_commande_display }}</td>
+                                        <td >
+                                            {% for product in commande.commandeproduct_set.all %}
+                                                {{ product.product.name }} (x{{ product.quantity }})<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td >
+                                            {% for service in commande.commandeservice_set.all %}
+                                                {{ service.service.name }} (x{{ service.quantity }})<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td >{{ commande.date_creation }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -232,3 +242,5 @@
 </body>
 
 </html>
+message.txt
+12 Kox

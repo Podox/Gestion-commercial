@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>Service Management</title>
+
+    {% load static %}
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+    <!--external css-->
+    <link href="{% static 'assets/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/zabuto_calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/js/gritter/css/jquery.gritter.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/lineicons/style.css' %}">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style-responsive.css' %}" rel="stylesheet">
+
+    <script src="{% static 'assets/js/jquery.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+</head>
+
+<body>
+
+    <section id="container">
+        <!-- TOP BAR CONTENT & NOTIFICATIONS -->
+        <header class="header black-bg">
+            <div class="sidebar-toggle-box">
+                <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+            </div>
+            <!--logo start-->
+            <a href="{% url 'index' %}" class="logo"><b>Agora Technology</b></a>
+            <!--logo end-->
+            <div class="nav notify-row" id="top_menu">
+            </div>
+            <div class="top-menu">
+                <ul class="nav pull-right top-menu">
+                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </header>
+        <!--header end-->
+
+        <!-- MAIN SIDEBAR MENU -->
+        <aside>
+            <div id="sidebar" class="nav-collapse ">
+                <!-- sidebar menu start-->
+                <ul class="sidebar-menu" id="nav-accordion">
+                    <h5 class="centered">Menu</h5>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-user"></i>
+                            <span>Client</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gclient' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-truck"></i>
+                            <span>Fournisseur</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-money"></i>
+                            <span>Commande</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'commande_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>Offre</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'offre_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-product-hunt"></i>
+                            <span>Product</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'product_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gproduct' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span>Service</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'service_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gservice' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <!--sidebar end-->
+
+        <!-- MAIN CONTENT -->
+        <section id="main-content">
+            <section class="wrapper">
+                <h3><i class="fa fa-angle-right"></i> Gestion des Services</h3>
+                <div class="row mt">
+                    <div class="col-md-12">
+                        <div class="content-panel">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#addServiceModal"><i class="fa fa-plus"></i> Ajouter un Service</button>
+                            <table class="table table-striped table-advance table-hover">
+                                <h4><i class="fa fa-angle-right"></i> Liste des Services</h4>
+                                <hr>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom</th>
+                                        <th>Prix</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="serviceTableBody">
+                                    {% for service in services %}
+                                    <tr id="service-{{ service.id }}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ service.name }}</td>
+                                        <td>{{ service.price }}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs edit-service" data-id="{{ service.id }}"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs delete-service" data-id="{{ service.id }}"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div><!-- /content-panel -->
+                    </div><!-- /col-md-12 -->
+                </div><!-- /row -->
+
+                <!-- Add Service Modal -->
+                <div class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="addServiceModalLabel">Ajouter un Service</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addServiceForm">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    <div class="form-group">
+                                        <label for="name">Nom</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">Prix</label>
+                                        <input type="text" class="form-control" id="price" name="price" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Service Modal -->
+                <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="editServiceModalLabel">Modifier le Service</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editServiceForm">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    <input type="hidden" id="edit-service-id" name="id">
+                                    <div class="form-group">
+                                        <label for="edit-name">Nom</label>
+                                        <input type="text" class="form-control" id="edit-name" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-price">Prix</label>
+                                        <input type="text" class="form-control" id="edit-price" name="price" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section><!-- /wrapper -->
+        </section><!-- /MAIN CONTENT -->
+
+        <!--footer start-->
+        <footer class="site-footer">
+            <div class="text-center">
+                2024 - Agora Technology
+                <a href="#" class="go-top">
+                    <i class="fa fa-angle-up"></i>
+                </a>
+            </div>
+        </footer>
+        <!--footer end-->
+    </section>
+
+    <!-- JavaScript for handling AJAX requests and modals -->
+    <script>
+        $(document).ready(function () {
+            // Handle add service form submission
+            $('#addServiceForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "service_add" %}',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#addServiceModal').modal('hide');
+                        $('#serviceTableBody').append(`
+                            <tr id="service-${response.id}">
+                                <td>${response.id}</td>
+                                <td>${response.name}</td>
+                                <td>${response.price}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs edit-service" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+                                    <button class="btn btn-danger btn-xs delete-service" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+                                </td>
+                            </tr>
+                        `);
+                    },
+                    error: function (response) {
+                        alert('Failed to add service');
+                    }
+                });
+            });
+
+            // Handle edit service button click
+            $('#serviceTableBody').on('click', '.edit-service', function () {
+                const serviceId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: `/services/${serviceId}/edit/`,
+                    success: function (response) {
+                        $('#edit-service-id').val(response.id);
+                        $('#edit-name').val(response.name);
+                        $('#edit-price').val(response.price);
+                        $('#editServiceModal').modal('show');
+                    },
+                    error: function (response) {
+                        alert('Failed to fetch service data');
+                    }
+                });
+            });
+
+            // Handle edit service form submission
+            $('#editServiceForm').submit(function (e) {
+                e.preventDefault();
+                const serviceId = $('#edit-service-id').val();
+                $.ajax({
+                    type: 'POST',
+                    url: `/services/${serviceId}/edit/`,
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#editServiceModal').modal('hide');
+                        $(`#service-${serviceId}`).replaceWith(`
+                            <tr id="service-${response.id}">
+                                <td>${response.id}</td>
+                                <td>${response.name}</td>
+                                <td>${response.price}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs edit-service" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+                                    <button class="btn btn-danger btn-xs delete-service" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+                                </td>
+                            </tr>
+                        `);
+                    },
+                    error: function (response) {
+                        alert('Failed to edit service');
+                    }
+                });
+            });
+
+            // Handle delete service button click
+            $('#serviceTableBody').on('click', '.delete-service', function () {
+                const serviceId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this service?')) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/services/${serviceId}/delete/`,
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            $(`#service-${serviceId}`).remove();
+                        },
+                        error: function (response) {
+                            alert('Failed to delete service');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

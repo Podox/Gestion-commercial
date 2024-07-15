@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>Product Management</title>
+
+    {% load static %}
+
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/zabuto_calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/js/gritter/css/jquery.gritter.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/lineicons/style.css' %}">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style-responsive.css' %}" rel="stylesheet">
+    <li><a href="{% url 'Gproduct' %}">Gerer</a></li>
+    </ul>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-cogs"></i>
+            <span>Service</span>
+        </a>
+        <ul class="sub">
+            <li><a href="{% url 'service_list' %}">Afficher</a></li>
+            <li><a href="{% url 'Gservice' %}">Gerer</a></li>
+        </ul>
+    </li>
+    </ul>
+    </div>
+    </aside>
+    <section id="main-content">
+        <section class="wrapper">
+            <h3><i class="fa fa-angle-right"></i> Gestion des Produits</h3>
+            <div class="row mt">
+                <div class="col-md-12">
+                    <div class="content-panel">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#addProductModal"><i
+                                class="fa fa-plus"></i> Ajouter un Produit</button>
+                        <table class="table table-striped table-advance table-hover">
+                            <h4><i class="fa fa-angle-right"></i> Liste des Produits</h4>
+                            <hr>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Marque</th>
+                                    <th>Prix</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                {% for product in products %}
+                                <tr id="product-{{ product.id }}">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.brand }}</td>
+                                    <td>{{ product.price }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs edit-product"
+                                            data-id="{{ product.id }}"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-danger btn-xs delete-product"
+                                            data-id="{{ product.id }}"><i class="fa fa-trash-o "></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Add Product Modal -->
+            <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog"
+                aria-labelledby="addProductModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="addProductModalLabel">Ajouter un Produit</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addProductForm">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <div class="form-group">
+                                    <label for="name">Nom</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand">Marque</label>
+                                    <input type="text" class="form-control" id="brand" name="brand" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Prix</label>
+                                    <input type="text" class="form-control" id="price" name="price" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Product Modal -->
+            <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog"
+                aria-labelledby="editProductModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="editProductModalLabel">Modifier le Produit</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editProductForm">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <input type="hidden" id="edit-product-id" name="id">
+                                <div class="form-group">
+                                    <label for="edit-name">Nom</label>
+                                    <input type="text" class="form-control" id="edit-name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-brand">Marque</label>
+                                    <input type="text" class="form-control" id="edit-brand" name="brand" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-price">Prix</label>
+                                    <input type="text" class="form-control" id="edit-price" name="price" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <!--footer start-->
+    <footer class="site-footer">
+        <div class="text-center">
+            2024 - Agora Technology
+            <a href="#" class="go-top">
+                <i class="fa fa-angle-up"></i>
+            </a>
+        </div>
+    </footer>
+    <!--footer end-->
+    </section>
+
+    <!-- JavaScript for handling AJAX requests and modals -->
+    <script>
+        $(document).ready(function () {
+            // Handle add product form submission
+            $('#addProductForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "product_add" %}',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#addProductModal').modal('hide');
+                        $('#productTableBody').append(`
+    <tr id="product-${response.id}">
+        <td>${response.id}</td>
+        <td>${response.name}</td>
+        <td>${response.brand}</td>
+        <td>${response.price}</td>
+        <td>
+            <button class="btn btn-primary btn-xs edit-product" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+            <button class="btn btn-danger btn-xs delete-product" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+        </td>
+    </tr>
+`);
+                    },
+                    error: function (response) {
+                        alert('Failed to add product');
+                    }
+                });
+            });
+
+            // Handle edit product button click
+            $('#productTableBody').on('click', '.edit-product', function () {
+                const productId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: `/products/${productId}/edit/`,
+                    success: function (response) {
+                        $('#edit-product-id').val(response.id);
+                        $('#edit-name').val(response.name);
+                        $('#edit-brand').val(response.brand);
+                        $('#edit-price').val(response.price);
+                        $('#editProductModal').modal('show');
+                    },
+                    error: function (response) {
+                        alert('Failed to fetch product data');
+                    }
+                });
+            });
+
+            // Handle edit product form submission
+            $('#editProductForm').submit(function (e) {
+                e.preventDefault();
+                const productId = $('#edit-product-id').val();
+                $.ajax({
+                    type: 'POST',
+                    url: `/products/${productId}/edit/`,
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#editProductModal').modal('hide');
+                        $(`#product-${productId}`).replaceWith(`
+    <tr id="product-${response.id}">
+        <td>${response.id}</td>
+        <td>${response.name}</td>
+        <td>${response.brand}</td>
+        <td>${response.price}</td>
+        <td>
+            <button class="btn btn-primary btn-xs edit-product" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
+            <button class="btn btn-danger btn-xs delete-product" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
+        </td>
+    </tr>
+`);
+                    },
+                    error: function (response) {
+                        alert('Failed to edit product');
+                    }
+                });
+            });
+
+            // Handle delete product button click
+            $('#productTableBody').on('click', '.delete-product', function () {
+                const productId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this product?')) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/products/${productId}/delete/`,
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            $(`#product-${productId}`).remove();
+                        },
+                        error: function (response) {
+                            alert('Failed to delete product');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    </body>
+
+</html>

@@ -9,6 +9,8 @@ from GcomApp.models import Client, Command, Offre, Fournisseur,Status
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     if request.method == 'POST':
@@ -197,6 +199,7 @@ def offre_list(request):
     return render(request, 'offre.html', {'offres': offres})
 
 
+@login_required
 def Gclient_view(request):
     clients = Client.objects.all()
     statuses = Status.objects.all()  # Fetch all statuses to populate the dropdown
@@ -272,3 +275,150 @@ def client_delete(request, client_id):
     client = get_object_or_404(Client, id=client_id)
     client.delete()
     return JsonResponse({'result': 'ok'})
+
+@login_required
+def Gfournisseur_view(request):
+    fournisseurs = Fournisseur.objects.all()
+    return render(request, 'Gfournisseur.html', {'fournisseurs': fournisseurs})
+
+@login_required
+def fournisseur_add(request):
+    if request.method == 'POST':
+        prenom = request.POST.get('prenom')
+        nom = request.POST.get('nom')
+        email = request.POST.get('email')
+        adresse = request.POST.get('adresse')
+        numero_telephone = request.POST.get('numero_telephone')
+        fournisseur = Fournisseur.objects.create(
+            prenom=prenom,
+            nom=nom,
+            email=email,
+            adresse=adresse,
+            numero_telephone=numero_telephone
+        )
+        response_data = {
+            'id': fournisseur.id,
+            'prenom': fournisseur.prenom,
+            'nom': fournisseur.nom,
+            'email': fournisseur.email,
+            'adresse': fournisseur.adresse,
+            'numero_telephone': fournisseur.numero_telephone,
+            'date_ajout': fournisseur.date_ajout
+        }
+        return JsonResponse(response_data)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def fournisseur_edit(request, fournisseur_id):
+    fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
+    if request.method == 'POST':
+        fournisseur.prenom = request.POST.get('prenom')
+        fournisseur.nom = request.POST.get('nom')
+        fournisseur.email = request.POST.get('email')
+        fournisseur.adresse = request.POST.get('adresse')
+        fournisseur.numero_telephone = request.POST.get('numero_telephone')
+        fournisseur.save()
+        response_data = {
+            'id': fournisseur.id,
+            'prenom': fournisseur.prenom,
+            'nom': fournisseur.nom,
+            'email': fournisseur.email,
+            'adresse': fournisseur.adresse,
+            'numero_telephone': fournisseur.numero_telephone,
+            'date_ajout': fournisseur.date_ajout
+        }
+        return JsonResponse(response_data)
+    response_data = {
+        'id': fournisseur.id,
+        'prenom': fournisseur.prenom,
+        'nom': fournisseur.nom,
+        'email': fournisseur.email,
+        'adresse': fournisseur.adresse,
+        'numero_telephone': fournisseur.numero_telephone
+    }
+    return JsonResponse(response_data)
+
+@login_required
+def fournisseur_delete(request, fournisseur_id):
+    fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
+    fournisseur.delete()
+    return JsonResponse({'result': 'ok'})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Service, Client, Status
+
+
+# Product views
+@login_required
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+@login_required
+def product_add(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        brand = request.POST.get('brand')
+        price = request.POST.get('price')
+        product = Product.objects.create(name=name, brand=brand, price=price)
+        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def product_edit(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.name = request.POST.get('name')
+        product.brand = request.POST.get('brand')
+        product.price = request.POST.get('price')
+        product.save()
+        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
+    return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
+
+@login_required
+def product_delete(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    return JsonResponse({'result': 'ok'})
+
+# Service views
+@login_required
+def service_list(request):
+    services = Service.objects.all()
+    return render(request, 'service_list.html', {'services': services})
+
+@login_required
+def service_add(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price = request.POST.get('price')
+        service = Service.objects.create(name=name, price=price)
+        return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def service_edit(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        service.name = request.POST.get('name')
+        service.price = request.POST.get('price')
+        service.save()
+        return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
+    return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
+
+@login_required
+def service_delete(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    service.delete()
+    return JsonResponse({'result': 'ok'})
+
+@login_required
+def Gproduct_view(request):
+    products = Product.objects.all()
+    return render(request, 'Gproduct.html', {'products': products})
+
+# Generic Service View
+@login_required
+def Gservice_view(request):
+    services = Service.objects.all()
+    return render(request, 'Gservice.html', {'services': services})
