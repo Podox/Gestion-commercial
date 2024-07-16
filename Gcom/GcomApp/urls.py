@@ -35,8 +35,5 @@ urlpatterns = [
     path('Gproduct/', views.Gproduct_view, name='Gproduct'),
     # Service
     path('services/', views.service_list, name='service_list'),
-    path('services/add/', views.service_add, name='service_add'),
-    path('services/<int:service_id>/edit/', views.service_edit, name='service_edit'),
-    path('services/<int:service_id}/delete/', views.service_delete, name='service_delete'),
-    path('Gservice/', views.Gservice_view, name='Gservice'), 
+    path('services/', views.service_list, name='Gservice'),
 ]

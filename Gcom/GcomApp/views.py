@@ -387,30 +387,6 @@ def service_list(request):
     services = Service.objects.all()
     return render(request, 'service_list.html', {'services': services})
 
-@login_required
-def service_add(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        price = request.POST.get('price')
-        service = Service.objects.create(name=name, price=price)
-        return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@login_required
-def service_edit(request, service_id):
-    service = get_object_or_404(Service, id=service_id)
-    if request.method == 'POST':
-        service.name = request.POST.get('name')
-        service.price = request.POST.get('price')
-        service.save()
-        return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
-    return JsonResponse({'id': service.id, 'name': service.name, 'price': str(service.price)})
-
-@login_required
-def service_delete(request, service_id):
-    service = get_object_or_404(Service, id=service_id)
-    service.delete()
-    return JsonResponse({'result': 'ok'})
 
 @login_required
 def Gproduct_view(request):

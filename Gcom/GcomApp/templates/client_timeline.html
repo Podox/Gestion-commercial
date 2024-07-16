@@ -82,30 +82,79 @@
         <aside>
             <div id="sidebar" class="nav-collapse ">
                 <!-- sidebar menu start-->
-                
-
-
-                    <ul class="sidebar-menu" id="nav-accordion">
-                        <h5 class="centered">Menu</h5>
-                        <li class="mt">
-
-                            <a class="active" href="{% url 'index' %}">
-                                <i class="fa fa-dashboard"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-user"></i>
-                                <span>Client</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="{% url 'client_list' %}">Afficher</a></li>
-                                <li><a href="{% url 'Gclient' %}">Gerer</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <!-- sidebar menu end-->
+                <ul class="sidebar-menu" id="nav-accordion">
+                    <h5 class="centered">Menu</h5>
+                    <li class="mt">
+                        <a class="active" href="{% url 'index' %}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-user"></i>
+                            <span>Client</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'client_timeline' %}">Timeline</a></li>
+                            <li><a href="{% url 'Gclient' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-truck"></i>
+                            <span>Fournisseur</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-money"></i>
+                            <span>Commande</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'commande_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>Offre</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'offre_list' %}">Afficher</a></li>
+                            <li><a href="buttons.html">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-dropbox"></i>
+                            <span>Product</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'product_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gproduct' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span>Service</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'service_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gservice' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <!-- sidebar menu end-->
             </div>
         </aside>
         <!--sidebar end-->

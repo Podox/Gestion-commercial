@@ -25,22 +25,7 @@
 
     <script src="{% static 'assets/js/chart-master/Chart.js' %}"></script>
 
-    <style>
-        .copied {
-            background-color: #b1f1c0;
-        }
-        #copy-notification {
-            display: none;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #8ee9a3;
-            color: #000;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-    </style>
+   
 </head>
 
 <body>
@@ -94,7 +79,7 @@
                         <ul class="sub">
                             <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
                             <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
-                            <li><a href="buttons.html">Gerer</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
@@ -113,10 +98,31 @@
                             <span>Offre</span>
                         </a>
                         <ul class="sub">
-                            
+                            <li><a href="{% url 'offre_list' %}">Afficher</a></li>
                             <li><a href="buttons.html">Gerer</a></li>
                         </ul>
                     </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-dropbox"></i>
+                            <span>Product</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'product_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gproduct' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span>Service</span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="{% url 'service_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'Gservice' %}">Gerer</a></li>
+                        </ul>
+                    </li>
+                    
                 </ul>
                 <!-- sidebar menu end-->
             </div>

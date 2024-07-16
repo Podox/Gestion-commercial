@@ -55,6 +55,12 @@
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
                     <h5 class="centered">Menu</h5>
+                    <li class="mt">
+                        <a class="active" href="{% url 'index' %}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
                             <i class="fa fa-user"></i>
@@ -99,7 +105,7 @@
                     </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
-                            <i class="fa fa-product-hunt"></i>
+                            <i class="fa fa-dropbox"></i>
                             <span>Product</span>
                         </a>
                         <ul class="sub">
@@ -117,6 +123,7 @@
                             <li><a href="{% url 'Gservice' %}">Gerer</a></li>
                         </ul>
                     </li>
+                    
                 </ul>
                 <!-- sidebar menu end-->
             </div>
@@ -338,7 +345,25 @@
             });
         });
     </script>
+   <!-- js placed at the end of the document so the pages load faster -->
+   <script src="{% static 'assets/js/jquery.js' %}"></script>
+   <script src="{% static 'assets/js/jquery-1.8.3.min.js' %}"></script>
+   <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+   <script class="include" type="text/javascript" src="{% static 'assets/js/jquery.dcjqaccordion.2.7.js' %}"></script>
+   <script src="{% static 'assets/js/jquery.scrollTo.min.js' %}"></script>
+   <script src="{% static 'assets/js/jquery.nicescroll.js' %}" type="text/javascript"></script>
+   <script src="{% static 'assets/js/jquery.sparkline.js' %}"></script>
 
+   <!--common script for all pages-->
+   <script src="{% static 'assets/js/common-scripts.js' %}"></script>
+
+   <script type="text/javascript" src="{% static 'assets/js/gritter/js/jquery.gritter.js' %}"></script>
+   <script type="text/javascript" src="{% static 'assets/js/gritter-conf.js' %}"></script>
+
+   <!--script for this page-->
+   <script src="{% static 'assets/js/sparkline-chart.js' %}"></script>
+   <script src="{% static 'assets/js/zabuto_calendar.js' %}"></script>
+</body>
 </body>
 
 </html>

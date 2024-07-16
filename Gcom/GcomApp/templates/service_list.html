@@ -55,6 +55,12 @@
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
                     <h5 class="centered">Menu</h5>
+                    <li class="mt">
+                        <a class="active" href="{% url 'index' %}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
                             <i class="fa fa-user"></i>
@@ -62,6 +68,7 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'client_list' %}">Afficher</a></li>
+                            <li><a href="{% url 'client_timeline' %}">Timeline</a></li>
                             <li><a href="{% url 'Gclient' %}">Gerer</a></li>
                         </ul>
                     </li>
@@ -98,7 +105,7 @@
                     </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
-                            <i class="fa fa-product-hunt"></i>
+                            <i class="fa fa-dropbox"></i>
                             <span>Product</span>
                         </a>
                         <ul class="sub">
@@ -116,7 +123,9 @@
                             <li><a href="{% url 'Gservice' %}">Gerer</a></li>
                         </ul>
                     </li>
+                    
                 </ul>
+                <!-- sidebar menu end-->
             </div>
         </aside>
         <!--sidebar end-->
@@ -227,103 +236,7 @@
     </section>
 
     <!-- JavaScript for handling AJAX requests and modals -->
-    <script>
-        $(document).ready(function () {
-            // Handle add service form submission
-            $('#addServiceForm').submit(function (e) {
-                e.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "service_add" %}',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        $('#addServiceModal').modal('hide');
-                        $('#serviceTableBody').append(`
-                            <tr id="service-${response.id}">
-                                <td>${response.id}</td>
-                                <td>${response.name}</td>
-                                <td>${response.price}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-xs edit-service" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
-                                    <button class="btn btn-danger btn-xs delete-service" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
-                                </td>
-                            </tr>
-                        `);
-                    },
-                    error: function (response) {
-                        alert('Failed to add service');
-                    }
-                });
-            });
-
-            // Handle edit service button click
-            $('#serviceTableBody').on('click', '.edit-service', function () {
-                const serviceId = $(this).data('id');
-                $.ajax({
-                    type: 'GET',
-                    url: `/services/${serviceId}/edit/`,
-                    success: function (response) {
-                        $('#edit-service-id').val(response.id);
-                        $('#edit-name').val(response.name);
-                        $('#edit-price').val(response.price);
-                        $('#editServiceModal').modal('show');
-                    },
-                    error: function (response) {
-                        alert('Failed to fetch service data');
-                    }
-                });
-            });
-
-            // Handle edit service form submission
-            $('#editServiceForm').submit(function (e) {
-                e.preventDefault();
-                const serviceId = $('#edit-service-id').val();
-                $.ajax({
-                    type: 'POST',
-                    url: `/services/${serviceId}/edit/`,
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        $('#editServiceModal').modal('hide');
-                        $(`#service-${serviceId}`).replaceWith(`
-                            <tr id="service-${response.id}">
-                                <td>${response.id}</td>
-                                <td>${response.name}</td>
-                                <td>${response.price}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-xs edit-service" data-id="${response.id}"><i class="fa fa-pencil"></i></button>
-                                    <button class="btn btn-danger btn-xs delete-service" data-id="${response.id}"><i class="fa fa-trash-o "></i></button>
-                                </td>
-                            </tr>
-                        `);
-                    },
-                    error: function (response) {
-                        alert('Failed to edit service');
-                    }
-                });
-            });
-
-            // Handle delete service button click
-            $('#serviceTableBody').on('click', '.delete-service', function () {
-                const serviceId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this service?')) {
-                    $.ajax({
-                        type: 'POST',
-                        url: `/services/${serviceId}/delete/`,
-                        data: {
-                            csrfmiddlewaretoken: '{{ csrf_token }}'
-                        },
-                        success: function (response) {
-                            $(`#service-${serviceId}`).remove();
-                        },
-                        error: function (response) {
-                            alert('Failed to delete service');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-
+    
 </body>
 
 </html>
