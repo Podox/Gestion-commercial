@@ -124,8 +124,9 @@ def fournisseur_timeline(request):
             fournisseur_events.append({
                 'date': command.date_creation,
                 'title': f'Commande {command.id}',
-                'description': command.id
+                'description': f'{command.client.prenom} {command.client.nom}'
             })
+        
         fournisseur_events.sort(key=lambda x: x['date'], reverse=True)
     context = {
         'fournisseurs': fournisseurs,
