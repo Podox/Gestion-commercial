@@ -119,7 +119,7 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'commande_list' %}">Afficher</a></li>
-                            <li><a href="buttons.html">Gerer</a></li>
+                            <li><a href="{% url 'manage_commands' %}">Gerer</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
@@ -223,8 +223,17 @@
                 </div><!-- /row -->
             </section><!-- /wrapper -->
         </section><!-- /MAIN CONTENT -->
-       
+        <footer class="site-footer">
+            <div class="text-center">
+                2024 - Agora Technology
+                <a href="#" class="go-top">
+                    <i class="fa fa-angle-up"></i>
+                </a>
+            </div>
+        </footer>
     </section>
+
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const copyCells = document.querySelectorAll('.copy-cell');

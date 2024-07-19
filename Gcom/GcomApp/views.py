@@ -1,16 +1,15 @@
-# GcomApp/views.py
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages 
-from GcomApp.models import Client, Command, Offre, Fournisseur,Status
+from GcomApp.models import Client, Command, Offre, Fournisseur, Status, Product, Service, CommandeProduct, CommandeService
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
+from .forms import ProductForm, ServiceForm, CommandForm,SelectFournisseurForm, AssignCommandsForm
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     if request.method == 'POST':
@@ -19,43 +18,27 @@ def login_view(request):
         if username == 'agora' and password == 'agora123':
             user = authenticate(request, username=username, password=password)
             if user is None:
-                # Create the user if it doesn't exist
                 from django.contrib.auth.models import User
                 user = User.objects.create_user(username='agora', password='agora123')
             login(request, user)
-            return redirect('index')  # Redirect to index after login
+            return redirect('index')
         else:
-            messages.error(request, "Invalid login details. Please try again.")  # Add error message
+            messages.error(request, "Invalid login details. Please try again.")
     return render(request, 'login.html')
 
 @login_required
 def logout_view(request):
-    # Clear the session data
     request.session.flush()
     return render(request, 'login.html')
 
 @login_required
 def index(request):
-    # Get the count of clients
     client_count = Client.objects.count()
-
-    # Get the count of commands
     command_count = Command.objects.count()
-
-    # Get the count of fournisseurs
     fournisseur_count = Fournisseur.objects.count()
-
-    # Get the count of offers
     offre_count = Offre.objects.count()
-
-    # Get the count of clients with a status "Commande confirmer"
     confirmed_status = Status.objects.filter(name="Commande confirmer").first()
-    if confirmed_status:
-        confirmed_clients_count = Client.objects.filter(status=confirmed_status).distinct().count()
-    else:
-        confirmed_clients_count = 0
-
-    # Get the count of clients created per month for the current year
+    confirmed_clients_count = Client.objects.filter(status=confirmed_status).distinct().count() if confirmed_status else 0
     current_year = timezone.now().year
     clients_by_month = (
         Client.objects.filter(date_creation__year=current_year)
@@ -64,8 +47,6 @@ def index(request):
         .annotate(count=Count('id'))
         .order_by('month')
     )
-
-    # Get the count of commands created per month for the current year
     commands_by_month = (
         Command.objects.filter(date_creation__year=current_year)
         .annotate(month=TruncMonth('date_creation'))
@@ -73,18 +54,12 @@ def index(request):
         .annotate(count=Count('id'))
         .order_by('month')
     )
-
-    # Format the data for the client creation chart
     monthly_client_data = {month: 0 for month in range(1, 13)}
     for entry in clients_by_month:
         monthly_client_data[entry['month'].month] = entry['count']
-
-    # Format the data for the command creation chart
     monthly_command_data = {month: 0 for month in range(1, 13)}
     for entry in commands_by_month:
         monthly_command_data[entry['month'].month] = entry['count']
-
-    # Context dictionary to pass data to the template
     context = {
         'client_count': client_count,
         'command_count': command_count,
@@ -94,12 +69,7 @@ def index(request):
         'monthly_client_data': monthly_client_data,
         'monthly_command_data': monthly_command_data,
     }
-
     return render(request, 'index.html', context)
-
-@login_required
-def client_view(request):
-    return render(request, 'client.html')
 
 @login_required
 def client_list(request):
@@ -108,51 +78,32 @@ def client_list(request):
 
 @login_required
 def client_timeline(request):
-    # Get the selected client ID from the query parameters
     selected_client_id = request.GET.get('client_id')
-
-    # Fetch all clients to populate the dropdown
     clients = Client.objects.all()
-
-    # Initialize variables for the selected client and their events
     selected_client = None
     client_events = []
-
     if selected_client_id:
-        # Fetch the selected client based on the ID
         selected_client = get_object_or_404(Client, id=selected_client_id)
-
-        # Fetch commands and offers for the selected client, ordered by creation date
         commands = Command.objects.filter(client=selected_client).order_by('date_creation')
         offres = Offre.objects.filter(client=selected_client).order_by('date_creation')
-
-        # Collect command events
         for command in commands:
             client_events.append({
                 'date': command.date_creation,
                 'title': f"Commande de type: {command.type_commande}",
-                'description': command.commande
+                'description': command.id
             })
-
-        # Collect offer events
         for offre in offres:
             client_events.append({
                 'date': offre.date_creation,
                 'title': f'Offre {offre.id}',
                 'description': offre.description
             })
-
-        # Sort events by date
         client_events.sort(key=lambda x: x['date'], reverse=True)
-
-    # Prepare the context for the template
     context = {
         'clients': clients,
         'selected_client': selected_client,
         'client_events': client_events
     }
-
-    # Render the template with the context
     return render(request, 'client_timeline.html', context)
 
 @login_required
@@ -166,26 +117,21 @@ def fournisseur_timeline(request):
     fournisseurs = Fournisseur.objects.all()
     selected_fournisseur = None
     fournisseur_events = []
-
     if selected_fournisseur_id:
         selected_fournisseur = get_object_or_404(Fournisseur, id=selected_fournisseur_id)
         commands = Command.objects.filter(fournisseur=selected_fournisseur).order_by('date_creation')
-
         for command in commands:
             fournisseur_events.append({
                 'date': command.date_creation,
                 'title': f'Commande {command.id}',
-                'description': command.commande
+                'description': command.id
             })
-
         fournisseur_events.sort(key=lambda x: x['date'], reverse=True)
-
     context = {
         'fournisseurs': fournisseurs,
         'selected_fournisseur': selected_fournisseur,
         'fournisseur_events': fournisseur_events
     }
-
     return render(request, 'fournisseur_timeline.html', context)
 
 @login_required
@@ -198,11 +144,10 @@ def offre_list(request):
     offres = Offre.objects.all()
     return render(request, 'offre.html', {'offres': offres})
 
-
 @login_required
 def Gclient_view(request):
     clients = Client.objects.all()
-    statuses = Status.objects.all()  # Fetch all statuses to populate the dropdown
+    statuses = Status.objects.all()
     return render(request, 'Gclient.html', {'clients': clients, 'statuses': statuses})
 
 @login_required
@@ -343,58 +288,234 @@ def fournisseur_delete(request, fournisseur_id):
     fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
     fournisseur.delete()
     return JsonResponse({'result': 'ok'})
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Service, Client, Status
-
-
-# Product views
 @login_required
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
-
-@login_required
-def product_add(request):
+def select_fournisseur(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        brand = request.POST.get('brand')
-        price = request.POST.get('price')
-        product = Product.objects.create(name=name, brand=brand, price=price)
-        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+        form = SelectFournisseurForm(request.POST)
+        if form.is_valid():
+            fournisseur = form.cleaned_data['fournisseur']
+            return redirect('assign_commands', fournisseur_id=fournisseur.id)
+    else:
+        form = SelectFournisseurForm()
+    return render(request, 'select_fournisseur.html', {'form': form})
 
 @login_required
-def product_edit(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def assign_commands(request, fournisseur_id):
+    fournisseur = get_object_or_404(Fournisseur, id=fournisseur_id)
     if request.method == 'POST':
-        product.name = request.POST.get('name')
-        product.brand = request.POST.get('brand')
-        product.price = request.POST.get('price')
-        product.save()
-        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
-    return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': str(product.price)})
-
-@login_required
-def product_delete(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    product.delete()
-    return JsonResponse({'result': 'ok'})
-
-# Service views
-@login_required
-def service_list(request):
-    services = Service.objects.all()
-    return render(request, 'service_list.html', {'services': services})
-
+        form = AssignCommandsForm(request.POST, instance=fournisseur)
+        if form.is_valid():
+            form.save()
+            return redirect('select_fournisseur')
+    else:
+        form = AssignCommandsForm(instance=fournisseur)
+    return render(request, 'assign_commands.html', {'form': form, 'fournisseur': fournisseur})
 
 @login_required
 def Gproduct_view(request):
     products = Product.objects.all()
     return render(request, 'Gproduct.html', {'products': products})
 
-# Generic Service View
+
+@csrf_exempt
+def product_add(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def product_edit(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    elif request.method == 'GET':
+        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def product_delete(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.delete()
+        return JsonResponse({'result': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+
 @login_required
 def Gservice_view(request):
     services = Service.objects.all()
     return render(request, 'Gservice.html', {'services': services})
+
+
+@csrf_exempt
+def service_add(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def service_edit(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    elif request.method == 'GET':
+        return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def service_delete(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        service.delete()
+        return JsonResponse({'result': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def service_list(request):
+    services = Service.objects.all()
+    return render(request, 'service_list.html', {'services': services})
+
+
+
+
+
+@login_required
+def manage_commands(request):
+    commandes = Command.objects.all()
+    clients = Client.objects.all()
+    products = Product.objects.all()
+    services = Service.objects.all()
+    command_form = CommandForm()
+    product_form = ProductForm()
+    service_form = ServiceForm()
+    return render(request, 'Gcommande.html', {
+        'commandes': commandes,
+        'clients': clients,
+        'products': products,
+        'services': services,
+        'command_form': command_form,
+        'product_form': product_form,
+        'service_form': service_form,
+    })
+
+@login_required
+def commande_edit(request, commande_id):
+    commande = get_object_or_404(Command, id=commande_id)
+    if request.method == 'POST':
+        form = CommandForm(request.POST, instance=commande)
+        if form.is_valid():
+            commande = form.save()
+            CommandeProduct.objects.filter(command=commande).delete()
+            for product_id in request.POST.getlist('products'):
+                quantity = request.POST.get(f'product_quantity_{product_id}', 1)
+                CommandeProduct.objects.create(command=commande, product_id=product_id, quantity=quantity)
+            CommandeService.objects.filter(command=commande).delete()
+            for service_id in request.POST.getlist('services'):
+                quantity = request.POST.get(f'service_quantity_{service_id}', 1)
+                CommandeService.objects.create(command=commande, service_id=service_id, quantity=quantity)
+            response_data = {
+                'id': commande.id,
+                'client': str(commande.client),
+                'type_commande': commande.get_type_commande_display(),
+                'date_creation': commande.date_creation
+            }
+            return JsonResponse(response_data)
+    response_data = {
+        'id': commande.id,
+        'client': str(commande.client),
+        'type_commande': commande.get_type_commande_display(),
+        'date_creation': commande.date_creation,
+        'products': [{'id': cp.product.id, 'name': cp.product.name, 'quantity': cp.quantity} for cp in commande.commandeproduct_set.all()],
+        'services': [{'id': cs.service.id, 'name': cs.service.name, 'quantity': cs.quantity} for cs in commande.commandeservice_set.all()]
+    }
+    return JsonResponse(response_data)
+
+@login_required
+def commande_delete(request, commande_id):
+    commande = get_object_or_404(Command, id=commande_id)
+    commande.delete()
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def manage_commands(request):
+    commandes = Command.objects.all()
+    clients = Client.objects.all()
+    products = Product.objects.all()
+    services = Service.objects.all()
+    command_form = CommandForm()
+    product_form = ProductForm()
+    service_form = ServiceForm()
+    return render(request, 'Gcommande.html', {
+        'commandes': commandes,
+        'clients': clients,
+        'products': products,
+        'services': services,
+        'command_form': command_form,
+        'product_form': product_form,
+        'service_form': service_form,
+    })
+
+@csrf_exempt
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def add_service(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def add_commande(request):
+    if request.method == 'POST':
+        form = CommandForm(request.POST)
+        if form.is_valid():
+            commande = form.save()
+            for product_id in request.POST.getlist('products'):
+                quantity = request.POST.get(f'product_quantity_{product_id}', 1)
+                CommandeProduct.objects.create(command=commande, product_id=product_id, quantity=quantity)
+            for service_id in request.POST.getlist('services'):
+                quantity = request.POST.get(f'service_quantity_{service_id}', 1)
+                CommandeService.objects.create(command=commande, service_id=service_id, quantity=quantity)
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
