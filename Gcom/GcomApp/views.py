@@ -11,6 +11,8 @@ from .forms import ProductForm, ServiceForm, CommandForm,SelectFournisseurForm, 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
+
+###############################################         LOGIN PAGE                #####################################################
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -70,7 +72,7 @@ def index(request):
         'monthly_command_data': monthly_command_data,
     }
     return render(request, 'index.html', context)
-
+###############################################         CLIENT                #####################################################
 @login_required
 def client_list(request):
     clients = Client.objects.all()
@@ -105,45 +107,6 @@ def client_timeline(request):
         'client_events': client_events
     }
     return render(request, 'client_timeline.html', context)
-
-@login_required
-def fournisseur_list(request):
-    fournisseurs = Fournisseur.objects.all()
-    return render(request, 'fournisseur.html', {'fournisseurs': fournisseurs})
-
-@login_required
-def fournisseur_timeline(request):
-    selected_fournisseur_id = request.GET.get('fournisseur_id')
-    fournisseurs = Fournisseur.objects.all()
-    selected_fournisseur = None
-    fournisseur_events = []
-    if selected_fournisseur_id:
-        selected_fournisseur = get_object_or_404(Fournisseur, id=selected_fournisseur_id)
-        commands = Command.objects.filter(fournisseur=selected_fournisseur).order_by('date_creation')
-        for command in commands:
-            fournisseur_events.append({
-                'date': command.date_creation,
-                'title': f'Commande {command.id}',
-                'description': f'{command.client.prenom} {command.client.nom}'
-            })
-        
-        fournisseur_events.sort(key=lambda x: x['date'], reverse=True)
-    context = {
-        'fournisseurs': fournisseurs,
-        'selected_fournisseur': selected_fournisseur,
-        'fournisseur_events': fournisseur_events
-    }
-    return render(request, 'fournisseur_timeline.html', context)
-
-@login_required
-def commandes_view(request):
-    commandes = Command.objects.all()
-    return render(request, 'commande.html', {'commandes': commandes})
-
-@login_required
-def offre_list(request):
-    offres = Offre.objects.all()
-    return render(request, 'offre.html', {'offres': offres})
 
 @login_required
 def Gclient_view(request):
@@ -222,6 +185,35 @@ def client_delete(request, client_id):
     client.delete()
     return JsonResponse({'result': 'ok'})
 
+###############################################         FOURNISSEUR               #####################################################
+@login_required
+def fournisseur_list(request):
+    fournisseurs = Fournisseur.objects.all()
+    return render(request, 'fournisseur.html', {'fournisseurs': fournisseurs})
+
+@login_required
+def fournisseur_timeline(request):
+    selected_fournisseur_id = request.GET.get('fournisseur_id')
+    fournisseurs = Fournisseur.objects.all()
+    selected_fournisseur = None
+    fournisseur_events = []
+    if selected_fournisseur_id:
+        selected_fournisseur = get_object_or_404(Fournisseur, id=selected_fournisseur_id)
+        commands = Command.objects.filter(fournisseur=selected_fournisseur).order_by('date_creation')
+        for command in commands:
+            fournisseur_events.append({
+                'date': command.date_creation,
+                'title': f'Commande {command.id}',
+                'description': f'{command.client.prenom} {command.client.nom}'
+            })
+        
+        fournisseur_events.sort(key=lambda x: x['date'], reverse=True)
+    context = {
+        'fournisseurs': fournisseurs,
+        'selected_fournisseur': selected_fournisseur,
+        'fournisseur_events': fournisseur_events
+    }
+    return render(request, 'fournisseur_timeline.html', context)
 @login_required
 def Gfournisseur_view(request):
     fournisseurs = Fournisseur.objects.all()
@@ -299,6 +291,11 @@ def select_fournisseur(request):
     else:
         form = SelectFournisseurForm()
     return render(request, 'select_fournisseur.html', {'form': form})
+###############################################         COMMANDES                #####################################################
+@login_required
+def commandes_view(request):
+    commandes = Command.objects.all()
+    return render(request, 'commande.html', {'commandes': commandes})
 
 @login_required
 def assign_commands(request, fournisseur_id):
@@ -311,99 +308,6 @@ def assign_commands(request, fournisseur_id):
     else:
         form = AssignCommandsForm(instance=fournisseur)
     return render(request, 'assign_commands.html', {'form': form, 'fournisseur': fournisseur})
-
-@login_required
-def Gproduct_view(request):
-    products = Product.objects.all()
-    return render(request, 'Gproduct.html', {'products': products})
-
-
-@csrf_exempt
-def product_add(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save()
-            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def product_edit(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            product = form.save()
-            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    elif request.method == 'GET':
-        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def product_delete(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        product.delete()
-        return JsonResponse({'result': 'ok'})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@login_required
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
-
-
-@login_required
-def Gservice_view(request):
-    services = Service.objects.all()
-    return render(request, 'Gservice.html', {'services': services})
-
-
-@csrf_exempt
-def service_add(request):
-    if request.method == 'POST':
-        form = ServiceForm(request.POST)
-        if form.is_valid():
-            service = form.save()
-            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def service_edit(request, service_id):
-    service = get_object_or_404(Service, id=service_id)
-    if request.method == 'POST':
-        form = ServiceForm(request.POST, instance=service)
-        if form.is_valid():
-            service = form.save()
-            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    elif request.method == 'GET':
-        return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def service_delete(request, service_id):
-    service = get_object_or_404(Service, id=service_id)
-    if request.method == 'POST':
-        service.delete()
-        return JsonResponse({'result': 'ok'})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@login_required
-def service_list(request):
-    services = Service.objects.all()
-    return render(request, 'service_list.html', {'services': services})
-
-
-
-
 
 @login_required
 def manage_commands(request):
@@ -483,28 +387,6 @@ def manage_commands(request):
     })
 
 @csrf_exempt
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save()
-            return JsonResponse({'id': product.id, 'name': product.name})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def add_service(request):
-    if request.method == 'POST':
-        form = ServiceForm(request.POST)
-        if form.is_valid():
-            service = form.save()
-            return JsonResponse({'id': service.id, 'name': service.name})
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
 def add_commande(request):
     if request.method == 'POST':
         form = CommandForm(request.POST)
@@ -520,3 +402,125 @@ def add_commande(request):
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+###############################################         OFFRE                #####################################################
+@login_required
+def offre_list(request):
+    offres = Offre.objects.all()
+    return render(request, 'offre.html', {'offres': offres})
+
+
+
+###############################################         PRODUIT                #####################################################
+
+@login_required
+def Gproduct_view(request):
+    products = Product.objects.all()
+    return render(request, 'Gproduct.html', {'products': products})
+
+
+@csrf_exempt
+def product_add(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def product_edit(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    elif request.method == 'GET':
+        return JsonResponse({'id': product.id, 'name': product.name, 'brand': product.brand, 'price': product.price})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def product_delete(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.delete()
+        return JsonResponse({'result': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+@csrf_exempt
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            return JsonResponse({'id': product.id, 'name': product.name})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+###############################################         SERVICE                #####################################################
+@login_required
+def Gservice_view(request):
+    services = Service.objects.all()
+    return render(request, 'Gservice.html', {'services': services})
+
+
+@csrf_exempt
+def service_add(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def service_edit(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    elif request.method == 'GET':
+        return JsonResponse({'id': service.id, 'name': service.name, 'price': service.price})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def service_delete(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        service.delete()
+        return JsonResponse({'result': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def service_list(request):
+    services = Service.objects.all()
+    return render(request, 'service_list.html', {'services': services})
+
+@csrf_exempt
+def add_service(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save()
+            return JsonResponse({'id': service.id, 'name': service.name})
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
