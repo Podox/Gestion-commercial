@@ -68,12 +68,26 @@ class CommandeService(models.Model):
     def __str__(self):
         return f"{self.service.name} (x{self.quantity}) in Commande {self.command.id}"
 class Offre(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    description = models.TextField()
     date_creation = models.DateTimeField(default=timezone.now)
+    command = models.ForeignKey(Command, on_delete=models.CASCADE)
+    profit_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Profit margin as an amount
 
     def __str__(self):
-        return f"Offre {self.id} for {self.client.prenom} {self.client.nom}"
+        return f"Offre {self.id} for {self.command.client.prenom} {self.command.client.nom}"
+
+    def calculate_total(self):
+        # Calculate total price for products in the command
+        total_products = sum(
+            cp.product.price * cp.quantity for cp in self.command.commandeproduct_set.all()
+        )
+        # Calculate total price for services in the command
+        total_services = sum(
+            cs.service.price * cs.quantity for cs in self.command.commandeservice_set.all()
+        )
+        # Calculate total with profit amount
+        total = total_products + total_services
+        total_with_profit = total + self.profit_amount
+        return total_with_profit
 
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=100)

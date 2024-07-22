@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 django = "*"
+reportlab = "*"
+weasyprint = "*"
+pdfkit = "*"
 
 [dev-packages]
 

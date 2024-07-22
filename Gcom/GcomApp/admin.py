@@ -33,6 +33,15 @@ class ProductAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
     search_fields = ('name',)
+class OffreAdmin(admin.ModelAdmin):
+    list_display = ('id', 'command', 'date_creation', 'profit_amount')
+    list_filter = ('date_creation',)
+    search_fields = ('command__id',)
+    readonly_fields = ('date_creation',)  # Make date_creation read-only if you don't want to modify it
+
+    # Optionally, customize form fields
+    fields = ('command', 'profit_amount', 'date_creation')
+
 
 admin.site.register(Status)
 admin.site.register(Client, ClientAdmin)

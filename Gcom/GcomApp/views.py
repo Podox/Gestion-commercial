@@ -7,12 +7,11 @@ from GcomApp.models import Client, Command, Offre, Fournisseur, Status, Product,
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
-from .forms import ProductForm, ServiceForm, CommandForm,SelectFournisseurForm, AssignCommandsForm
+from .forms import ProductForm, ServiceForm, CommandForm,SelectFournisseurForm, AssignCommandsForm,OffreForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.urls import reverse
 
-
-###############################################         LOGIN PAGE                #####################################################
+######################################         LOGIN PAGE                #####################################################
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -407,7 +406,48 @@ def add_commande(request):
 @login_required
 def offre_list(request):
     offres = Offre.objects.all()
-    return render(request, 'offre.html', {'offres': offres})
+    # Calculate the total profit and the total amount for products and services
+    total_profit = sum(offre.profit_amount for offre in offres)
+    total_products_services = sum(offre.calculate_total() for offre in offres)
+
+    return render(request, 'offre.html', {
+        'offres': offres,
+        'total_profit': total_profit,
+        'total_products_services': total_products_services
+    })
+
+def create_offre(request):
+    if request.method == 'POST':
+        form = OffreForm(request.POST)
+        if form.is_valid():
+            offre = form.save()
+            # Redirect to the receipt view after successful offer creation
+            return redirect('receipt_view', offre_id=offre.id)
+    else:
+        form = OffreForm()
+    
+    return render(request, 'create_offre.html', {'form': form})
+
+def receipt_view(request, offre_id):
+    offre = get_object_or_404(Offre, id=offre_id)
+    products = CommandeProduct.objects.filter(command=offre.command)
+    services = CommandeService.objects.filter(command=offre.command)
+    total_with_profit = offre.calculate_total()
+
+    context = {
+        'offre': offre,
+        'products': products,
+        'services': services,
+        'total_with_profit': total_with_profit,
+    }
+
+    return render(request, 'receipt.html', context)
+
+def get_commands(request):
+    client_id = request.GET.get('client_id')
+    commands = Command.objects.filter(client_id=client_id).values('id')
+    return JsonResponse({'commands': list(commands)})
+
 
 
 

@@ -1,0 +1,22 @@
+<!-- offre_detail.html -->
+
+{% block title %}Offre Details{% endblock %}
+
+{% block content %}
+  <h2>Offre {{ offre.id }} for {{ offre.client.prenom }} {{ offre.client.nom }}</h2>
+  <h3>Products</h3>
+  <ul>
+    {% for product in products %}
+      <li>{{ product.product.name }} (x{{ product.quantity }})</li>
+    {% endfor %}
+  </ul>
+  <h3>Services</h3>
+  <ul>
+    {% for service in services %}
+      <li>{{ service.service.name }} (x{{ service.quantity }})</li>
+    {% endfor %}
+  </ul>
+  <p>Frais supplémentaires: {{ offre.profit_amount }}</p>
+  <p>Total: {{ total_with_profit }}</p>
+  <a href="{% url 'generate_offre_pdf' offre.id %}" class="btn btn-primary">Download PDF</a>
+{% endblock %}

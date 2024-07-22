@@ -1,6 +1,5 @@
 from django import forms
-from .models import Command, Product, Service,Fournisseur
-
+from .models import Command, Product, Service,Fournisseur,Offre,Client
 class CommandForm(forms.ModelForm):
     class Meta:
         model = Command
@@ -29,4 +28,12 @@ class AssignCommandsForm(forms.ModelForm):
     class Meta:
         model = Fournisseur
         fields = ['commande']
-    
+
+class OffreForm(forms.ModelForm):
+    class Meta:
+        model = Offre
+        fields = ['command', 'profit_amount']
+        widgets = {
+            'command': forms.Select(attrs={'class': 'form-control'}),
+            'profit_amount': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

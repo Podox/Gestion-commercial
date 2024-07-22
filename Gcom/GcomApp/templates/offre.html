@@ -24,8 +24,6 @@
     <link href="{% static 'assets/css/style-responsive.css' %}" rel="stylesheet">
 
     <script src="{% static 'assets/js/chart-master/Chart.js' %}"></script>
-
-   
 </head>
 
 <body>
@@ -79,7 +77,7 @@
                         <ul class="sub">
                             <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
                             <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
-                                                        <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
                             <li><a href="{% url 'select_fournisseur' %}">Assigner Commandes</a></li>
                         </ul>
                     </li>
@@ -123,7 +121,6 @@
                             <li><a href="{% url 'Gservice' %}">Gerer</a></li>
                         </ul>
                     </li>
-                    
                 </ul>
                 <!-- sidebar menu end-->
             </div>
@@ -133,39 +130,55 @@
         <!--main content start-->
         <section id="main-content">
             <section class="wrapper">
-                
                 <h3><i class="fa fa-angle-right"></i> Offre Data</h3>
                 <div class="row">
                     <div class="col-md-12 mt">
                         <div class="content-panel">
+                            <h4><i class="fa fa-angle-right"></i> Offre Table</h4>
+                            <hr>
                             <table class="table table-striped">
-                                <h4><i class="fa fa-angle-right"></i> Offre Table</h4>
-                                
-                                <hr>
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Client</th>
+                                        <th>ID Commandes</th>
                                         <th>Description</th>
                                         <th>Date Creation</th>
+                                        <th>Total Products & Services</th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for offre in offres %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td class="copy-cell">{{ offre.client.prenom }} {{ offre.client.nom }}</td>
-                                        <td class="copy-cell">{{ offre.description }}</td>
-                                        <td class="copy-cell">{{ offre.date_creation }}</td>
+                                        <td>{{ offre.command.client.prenom }} {{ offre.command.client.nom }}</td>
+                                        <td>{{ offre.command.id }}</td>
+                                        <td>{{ offre.command.type_commande }}</td>
+                                        <td>{{ offre.date_creation|date:"F j, Y" }}</td>
+                                        <td>${{ offre.calculate_total|floatformat:2 }}</td>
+                                      
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No offers available</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
+                                <tfoot>
+                                   
+                                    <tr>
+                                        <td colspan="5" class="text-end" style="font-weight: bold;"><strong>Total Products & Services:</strong></td>
+                                        <td style="font-weight: bold;">${{ total_products_services|floatformat:2 }}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div><!-- /content-panel -->
                     </div><!-- /col-md-12 -->
                 </div><!-- /row -->
             </section>
         </section><!-- /MAIN CONTENT -->
+
         <footer class="site-footer">
             <div class="text-center">
                 2024 - Agora Technology

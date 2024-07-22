@@ -24,6 +24,9 @@ urlpatterns = [
     path('add_commande/', views.add_commande, name='add_commande'),
     #offre
     path('offre/', views.offre_list, name='offre_list'),
+    path('offre/create/', views.create_offre, name='create_offre'),
+    path('offre/<int:offre_id>/receipt/', views.receipt_view, name='receipt_view'),
+    path('get_commands/', views.get_commands, name='get_commands'),
     #fornisseur
     path('fournisseurs/', views.fournisseur_list, name='fournisseur_list'),
     path('fournisseurs/add/', views.fournisseur_add, name='fournisseur_add'),
