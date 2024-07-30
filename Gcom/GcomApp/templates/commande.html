@@ -133,18 +133,18 @@
                                 <hr>
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>Id</th>
                                         <th>Client</th>
                                         <th>Type</th>
                                         <th>Produits</th>
                                         <th>Services</th>
-                                        <th>Date de CrÃ©ation</th>
+                                        <th>Date de Creation</th>
                                     </tr>
                                 </thead>
                                 <tbody id="commandeTableBody">
                                     {% for commande in commandes %}
                                     <tr id="commande-{{ commande.id }}">
-                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ commande.id }}</td>
                                         <td>{{ commande.client }}</td>
                                         <td>{{ commande.get_type_commande_display }}</td>
                                         <td>

@@ -83,23 +83,27 @@ def client_timeline(request):
     clients = Client.objects.all()
     selected_client = None
     client_events = []
+
     if selected_client_id:
         selected_client = get_object_or_404(Client, id=selected_client_id)
         commands = Command.objects.filter(client=selected_client).order_by('date_creation')
-        offres = Offre.objects.filter(client=selected_client).order_by('date_creation')
         for command in commands:
             client_events.append({
                 'date': command.date_creation,
                 'title': f"Commande de type: {command.type_commande}",
                 'description': command.id
             })
+        
+        offres = Offre.objects.filter(command__client=selected_client).order_by('date_creation')
         for offre in offres:
             client_events.append({
                 'date': offre.date_creation,
                 'title': f'Offre {offre.id}',
                 'description': offre.description
             })
+
         client_events.sort(key=lambda x: x['date'], reverse=True)
+
     context = {
         'clients': clients,
         'selected_client': selected_client,
