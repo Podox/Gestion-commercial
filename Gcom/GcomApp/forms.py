@@ -1,3 +1,4 @@
+#forms.py
 from django import forms
 from .models import Command, Product, Service,Fournisseur,Offre,Client
 class CommandForm(forms.ModelForm):

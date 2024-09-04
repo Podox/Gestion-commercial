@@ -44,7 +44,6 @@
 
         <aside>
             <div id="sidebar" class="nav-collapse ">
-                <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
                     <h5 class="centered">Menu</h5>
                     <li class="mt">
@@ -72,7 +71,7 @@
                         <ul class="sub">
                             <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
                             <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
-                                                        <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
                             <li><a href="{% url 'select_fournisseur' %}">Assigner Commandes</a></li>
                         </ul>
                     </li>
@@ -116,9 +115,7 @@
                             <li><a href="{% url 'Gservice' %}">Gerer</a></li>
                         </ul>
                     </li>
-                    
                 </ul>
-                <!-- sidebar menu end-->
             </div>
         </aside>
 
@@ -140,6 +137,7 @@
                                         <th>Produits</th>
                                         <th>Services</th>
                                         <th>Date de Creation</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="commandeTableBody">
@@ -159,6 +157,10 @@
                                             {% endfor %}
                                         </td>
                                         <td>{{ commande.date_creation }}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs edit-commande" data-id="{{ commande.id }}" data-toggle="modal" data-target="#editCommandeModal"><i class="fa fa-pencil"></i> Edit</button>
+                                            <button class="btn btn-danger btn-xs delete-commande" data-id="{{ commande.id }}"><i class="fa fa-trash-o"></i> Delete</button>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -200,6 +202,43 @@
                                     </div>
                                     <div class="form-group" id="service_quantity_group"></div>
                                     <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Commande Modal -->
+                <div class="modal fade" id="editCommandeModal" tabindex="-1" role="dialog" aria-labelledby="editCommandeModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="editCommandeModalLabel">Edit Commande</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editCommandeForm" method="POST">
+                                    {% csrf_token %}
+                                    {{ command_form.as_p }}
+                                    <div class="form-group" id="edit_product_select_group">
+                                        <label for="edit_products">Produits</label>
+                                        <select multiple class="form-control" id="edit_products" name="products">
+                                            {% for product in products %}
+                                            <option value="{{ product.id }}">{{ product.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="edit_product_quantity_group"></div>
+                                    <div class="form-group" id="edit_service_select_group">
+                                        <label for="edit_services">Services</label>
+                                        <select multiple class="form-control" id="edit_services" name="services">
+                                            {% for service in services %}
+                                            <option value="{{ service.id }}">{{ service.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="edit_service_quantity_group"></div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
                                 </form>
                             </div>
                         </div>
@@ -285,7 +324,7 @@
                     const productId = $(this).val();
                     const productName = $(this).text();
                     $('#product_quantity_group').append(`
-                        <label for="product_quantity_${productId}">QuantitÃ© pour ${productName}</label>
+                        <label for="product_quantity_${productId}">Quantité pour ${productName}</label>
                         <input type="number" class="form-control" id="product_quantity_${productId}" name="product_quantity_${productId}" value="1">
                     `);
                 });
@@ -297,7 +336,7 @@
                     const serviceId = $(this).val();
                     const serviceName = $(this).text();
                     $('#service_quantity_group').append(`
-                        <label for="service_quantity_${serviceId}">QuantitÃ© pour ${serviceName}</label>
+                        <label for="service_quantity_${serviceId}">Quantité pour ${serviceName}</label>
                         <input type="number" class="form-control" id="service_quantity_${serviceId}" name="service_quantity_${serviceId}" value="1">
                     `);
                 });
@@ -359,6 +398,48 @@
                         alert('Failed to add commande');
                     }
                 });
+            });
+
+            // Edit commande button click handler
+            $('#commandeTableBody').on('click', '.edit-commande', function () {
+                const commandeId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: `{% url 'commande_edit' 0 %}`.replace('0', commandeId),
+                    success: function (response) {
+                        // Populate the form with the current data of the commande
+                        $('#editCommandeForm').attr('action', `{% url 'commande_edit' 0 %}`.replace('0', commandeId));
+                        $('#editCommandeForm #id_client').val(response.client_id);
+                        $('#editCommandeForm #id_type_commande').val(response.type_commande);
+                        // Load products and services quantities
+                        updateProductQuantities(); 
+                        updateServiceQuantities(); 
+                        $('#editCommandeModal').modal('show');
+                    },
+                    error: function (response) {
+                        alert('Failed to load commande data');
+                    }
+                });
+            });
+
+            // Delete commande button click handler
+            $('#commandeTableBody').on('click', '.delete-commande', function () {
+                const commandeId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this commande?')) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `{% url 'commande_delete' 0 %}`.replace('0', commandeId),
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            $('#commande-' + commandeId).remove(); // Remove the row from the table
+                        },
+                        error: function (response) {
+                            alert('Failed to delete commande');
+                        }
+                    });
+                }
             });
         });
     </script>

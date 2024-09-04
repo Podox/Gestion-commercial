@@ -1,3 +1,4 @@
+#views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ from django.db.models.functions import TruncMonth
 from .forms import ProductForm, ServiceForm, CommandForm,SelectFournisseurForm, AssignCommandsForm,OffreForm
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
+
 
 ######################################         LOGIN PAGE                #####################################################
 def login_view(request):
@@ -332,6 +334,7 @@ def manage_commands(request):
     })
 
 @login_required
+@csrf_exempt
 def commande_edit(request, commande_id):
     commande = get_object_or_404(Command, id=commande_id)
     if request.method == 'POST':
@@ -346,28 +349,25 @@ def commande_edit(request, commande_id):
             for service_id in request.POST.getlist('services'):
                 quantity = request.POST.get(f'service_quantity_{service_id}', 1)
                 CommandeService.objects.create(command=commande, service_id=service_id, quantity=quantity)
-            response_data = {
-                'id': commande.id,
-                'client': str(commande.client),
-                'type_commande': commande.get_type_commande_display(),
-                'date_creation': commande.date_creation
-            }
-            return JsonResponse(response_data)
-    response_data = {
-        'id': commande.id,
-        'client': str(commande.client),
-        'type_commande': commande.get_type_commande_display(),
-        'date_creation': commande.date_creation,
-        'products': [{'id': cp.product.id, 'name': cp.product.name, 'quantity': cp.quantity} for cp in commande.commandeproduct_set.all()],
-        'services': [{'id': cs.service.id, 'name': cs.service.name, 'quantity': cs.quantity} for cs in commande.commandeservice_set.all()]
-    }
-    return JsonResponse(response_data)
+            return JsonResponse({'status': 'success'})
+    else:
+        response_data = {
+            'id': commande.id,
+            'client_id': commande.client.id,
+            'type_commande': commande.type_commande,
+            'products': [{'id': cp.product.id, 'name': cp.product.name, 'quantity': cp.quantity} for cp in commande.commandeproduct_set.all()],
+            'services': [{'id': cs.service.id, 'name': cs.service.name, 'quantity': cs.quantity} for cs in commande.commandeservice_set.all()]
+        }
+        return JsonResponse(response_data)
 
 @login_required
+@csrf_exempt
 def commande_delete(request, commande_id):
     commande = get_object_or_404(Command, id=commande_id)
-    commande.delete()
-    return JsonResponse({'result': 'ok'})
+    if request.method == 'POST':
+        commande.delete()
+        return JsonResponse({'result': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @login_required

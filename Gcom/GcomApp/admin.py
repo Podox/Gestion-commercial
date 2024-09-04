@@ -1,3 +1,4 @@
+#admin.py
 from django.contrib import admin
 from .models import Status, Client, Command, Offre, Fournisseur, Product, Service, CommandeProduct, CommandeService
 
