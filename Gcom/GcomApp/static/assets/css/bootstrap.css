@@ -1093,7 +1093,7 @@ h4,
 }
 h5,
 .h5 {
-  font-size: 14px;
+  font-size: 19px;
 }
 h6,
 .h6 {
@@ -2852,17 +2852,17 @@ fieldset[disabled] .btn-primary.active {
 }
 .btn-success {
   color: #fff;
-  background-color: #5cb85c;
-  border-color: #4cae4c;
+  background-color: #aeb2b7;
+  border-color:#aeb2b7;
 }
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active,
 .btn-success.active,
 .open > .dropdown-toggle.btn-success {
-  color: #fff;
-  background-color: #449d44;
-  border-color: #398439;
+  color: #4a4a4a;
+  background-color: #76b276;
+  border-color: #ffffff;
 }
 .btn-success:active,
 .btn-success.active,

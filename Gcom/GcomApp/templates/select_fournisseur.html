@@ -1,6 +1,7 @@
 <!-- select_fournisseur.html -->
+  <!-- french-->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="utf-8">
@@ -34,7 +35,6 @@
     <![endif]-->
 </head>
 
-
 <body>
 
     <section id="container">
@@ -44,7 +44,7 @@
         <!--header start-->
         <header class="header black-bg">
             <div class="sidebar-toggle-box">
-                <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+                <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Basculer la navigation"></div>
             </div>
             <!--logo start-->
             <a href="index.html" class="logo"><b>Agora Technology</b></a>
@@ -53,7 +53,7 @@
             </div>
             <div class="top-menu">
                 <ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
+                    <li><a class="logout" href="{% url 'logout' %}">Déconnexion</a></li>
                 </ul>
             </div>
         </header>
@@ -72,7 +72,7 @@
                     <li class="mt">
                         <a class="active" href="{% url 'index' %}">
                             <i class="fa fa-dashboard"></i>
-                            <span>Dashboard</span>
+                            <span>Tableau de Bord</span>
                         </a>
                     </li>
                     <li class="sub-menu">
@@ -82,8 +82,8 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'client_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'client_timeline' %}">Timeline</a></li>
-                            <li><a href="{% url 'Gclient' %}">Gerer</a></li>
+                            <li><a href="{% url 'client_timeline' %}">Chronologie</a></li>
+                            <li><a href="{% url 'Gclient' %}">Gérer</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
@@ -93,8 +93,8 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'fournisseur_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'fournisseur_timeline' %}">Timeline</a></li>
-                                                        <li><a href="{% url 'Gfournisseur' %}">Gerer</a></li>
+                            <li><a href="{% url 'fournisseur_timeline' %}">Chronologie</a></li>
+                            <li><a href="{% url 'Gfournisseur' %}">Gérer</a></li>
                             <li><a href="{% url 'select_fournisseur' %}">Assigner Commandes</a></li>
                         </ul>
                     </li>
@@ -105,7 +105,7 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'commande_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'manage_commands' %}">Gerer</a></li>
+                            <li><a href="{% url 'manage_commands' %}">Gérer</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
@@ -115,17 +115,17 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'offre_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'create_offre' %}">Gerer</a></li>
+                            <li><a href="{% url 'create_offre' %}">Créer l'offre</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
                         <a href="javascript:;">
                             <i class="fa fa-dropbox"></i>
-                            <span>Product</span>
+                            <span>Produit</span>
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'product_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'Gproduct' %}">Gerer</a></li>
+                            <li><a href="{% url 'Gproduct' %}">Gérer</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
@@ -135,10 +135,9 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{% url 'service_list' %}">Afficher</a></li>
-                            <li><a href="{% url 'Gservice' %}">Gerer</a></li>
+                            <li><a href="{% url 'Gservice' %}">Gérer</a></li>
                         </ul>
                     </li>
-                    
                 </ul>
                 <!-- sidebar menu end-->
             </div>
@@ -149,42 +148,24 @@
         MAIN CONTENT
         *********************************************************************************************************************************************************** -->
         <!--main content start-->
-      <!--header start-->
-      <header class="header black-bg">
-        <div class="sidebar-toggle-box">
-            <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-        </div>
-      <!--logo start-->
-      <a href="index.html" class="logo"><b>Agora Technology</b></a>
-      <!--logo end-->
-      
-      <div class="top-menu">
-          <ul class="nav pull-right top-menu">
-              <li><a class="logout" href="login.html">Logout</a></li>
-          </ul>
-      </div>
-  </header>
-<!--header end-->
         <section id="main-content">
             <section class="wrapper">
                 
-                <h3><i class="fa fa-angle-right"></i> Client Data</h3>
+                <h3><i class="fa fa-angle-right"></i> Données du Client</h3>
                 
                 <div class="row">
                     <div class="col-md-12 mt">
                         <div class="content-panel">
                            
-         <h1 class="mb-4">Select Fournisseur</h1>
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                {{ form.fournisseur.label_tag }}
-                {{ form.fournisseur }}
-            </div>
-            <button type="submit" class="btn btn-primary">Next</button>
-        </form>
-
-                         
+                            <h1 class="mb-4">Sélectionner Fournisseur</h1>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    {{ form.fournisseur.label_tag }}
+                                    {{ form.fournisseur }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Suivant</button>
+                            </form>
 
                         </div><!-- /content-panel -->
                     </div><!-- /col-md-12 -->
@@ -216,7 +197,7 @@
                             notification.style.display = 'none';
                         }, 2000);
                     }).catch(err => {
-                        console.error('Failed to copy text: ', err);
+                        console.error('Échec de la copie du texte : ', err);
                     });
                 });
             });
@@ -246,9 +227,9 @@
             $(document).ready(function () {
                 var unique_id = $.gritter.add({
                     // (string | mandatory) the heading of the notification
-                    title: 'Welcome to Dashgum!',
+                    title: 'Bienvenue sur Dashgum !',
                     // (string | mandatory) the text inside the notification
-                    text: 'Hover me to enable the Close Button. You can hide the left sidebar clicking on the button next to the logo. Free version for <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
+                    text: 'Survolez-moi pour activer le bouton de fermeture. Vous pouvez cacher la barre latérale gauche en cliquant sur le bouton à côté du logo. Version gratuite pour <a href="http://blacktie.co" target="_blank" style="color:#ffd777">BlackTie.co</a>.',
                     // (string | optional) the image to display on the left
                     image: "{% static 'assets/img/ui-sam.jpg' %}",
                     // (bool | optional) if you want it to fade out on its own or just sit there
@@ -282,8 +263,8 @@
                     modal: true
                 },
                 legend: [
-                    { type: "text", label: "Special event", badge: "00" },
-                    { type: "block", label: "Regular event" }
+                    { type: "text", label: "Événement spécial", badge: "00" },
+                    { type: "block", label: "Événement régulier" }
                 ]
             });
         });
