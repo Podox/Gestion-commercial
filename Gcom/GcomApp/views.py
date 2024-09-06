@@ -452,7 +452,11 @@ def get_commands(request):
     commands = Command.objects.filter(client_id=client_id).values('id')
     return JsonResponse({'commands': list(commands)})
 
-
+def delete_offre(request, offre_id):
+    offer = get_object_or_404(Offre, id=offre_id)
+    if request.method == 'POST':
+        offer.delete()
+        return redirect('offre_list')  # Redirect to the list page after deletion
 
 
 ###############################################         PRODUIT                #####################################################

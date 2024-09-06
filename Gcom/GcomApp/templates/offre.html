@@ -35,7 +35,7 @@
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>Agora Technology</b></a>
+            <a href="{% url 'logout' %}" class="logo"><b>Agora Technology</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
             </div>
@@ -146,7 +146,7 @@
                                         <th>Description</th>
                                         <th>Date Creation</th>
                                         <th>Total Products & Services</th>
-                                       
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -158,16 +158,24 @@
                                         <td>{{ offre.command.type_commande }}</td>
                                         <td>{{ offre.date_creation|date:"F j, Y" }}</td>
                                         <td>${{ offre.calculate_total|floatformat:2 }}</td>
-                                      
+                                        <td>
+                                            <!-- Delete button -->
+                                             
+                                            <form method="post" action="{% url 'delete_offre' offre.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="6" class="text-center">No offers available</td>
+                                        <td colspan="7" class="text-center">No offers available</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
-                                   
                                     <tr>
                                         <td colspan="5" class="text-end" style="font-weight: bold;"><strong>Total Products & Services:</strong></td>
                                         <td style="font-weight: bold;">${{ total_products_services|floatformat:2 }}</td>
