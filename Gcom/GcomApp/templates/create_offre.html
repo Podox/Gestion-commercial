@@ -26,59 +26,7 @@
     <script src="{% static 'assets/js/chart-master/Chart.js' %}"></script>
 
     <!-- Custom styling for better visuals -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .header {
-            background: #343a40;
-            color: #fff;
-            padding: 10px 20px;
-        }
-        .logo {
-            font-size: 1.5em;
-            color: #fff;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .sidebar-menu > li > a {
-            color: #343a40;
-            font-size: 1em;
-            padding: 10px 15px;
-        }
-        .sidebar-menu > li.active > a, 
-        .sidebar-menu > li > a:hover {
-            background: #007bff;
-            color: #fff;
-        }
-        .form-horizontal {
-            background: #fff;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .form-control {
-            border-radius: 0;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .site-footer {
-            background: #343a40;
-            color: #fff;
-            padding: 10px 0;
-        }
-        .go-top {
-            color: #007bff;
-        }
-    </style>
+
 </head>
 
 <body>
@@ -89,7 +37,7 @@
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>Agora Technology</b></a>
+            <a href="{% url 'index' %}" class="logo"><b>Agora Technology</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
             </div>

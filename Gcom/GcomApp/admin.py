@@ -15,9 +15,18 @@ class CommandeServiceInline(admin.TabularInline):
     extra = 1
 
 class CommandAdmin(admin.ModelAdmin):
-    list_display = ('id', 'client', 'type_commande', 'date_creation')
+    list_display = ('id', 'client', 'type_commande', 'date_creation')  # Display 'date_creation'
     search_fields = ('client__nom', 'client__prenom', 'type_commande')
     inlines = [CommandeProductInline, CommandeServiceInline]
+    
+    # Allow modification of 'date_creation'
+    fields = ('client', 'type_commande', 'date_creation')  # Include 'date_creation' in fields to edit
+
+    # Optionally, make 'date_creation' editable from the list view (not recommended for date fields)
+    # list_editable = ('date_creation',)
+
+# Register the model and admin class
+
 
 class OffreAdmin(admin.ModelAdmin):
     list_display = ('id', 'client', 'date_creation')

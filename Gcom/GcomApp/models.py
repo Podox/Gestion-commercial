@@ -28,7 +28,6 @@ class Client(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     entreprise = models.CharField(max_length=100)
-    adresse = models.CharField(max_length=200)
     mail = models.EmailField()
     numero_telephone = models.CharField(max_length=15)
     date_creation = models.DateTimeField(default=timezone.now)
@@ -45,7 +44,7 @@ class Command(models.Model):
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    date_creation = models.DateTimeField(auto_now_add=True)
+    date_creation = models.DateTimeField(default=timezone.now)  # Change auto_now_add to default
     type_commande = models.CharField(max_length=30, choices=CLIENT_TYPE_CHOICES, default='Prestation')
     products = models.ManyToManyField(Product, through='CommandeProduct', related_name='commands')
     services = models.ManyToManyField(Service, through='CommandeService', related_name='commands')
