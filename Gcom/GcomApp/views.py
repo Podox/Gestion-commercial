@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages 
-from GcomApp.models import Client, Command, Offre, Fournisseur, Status, Product, Service, CommandeProduct, CommandeService
+from GcomApp.models import Client, Command, Offre, Fournisseur, Status, Product, Service,Login, CommandeProduct, CommandeService
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
@@ -18,15 +18,23 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        if username == 'agora' and password == 'agora123':
+
+        try:
+            login_record = Login.objects.get(username=username, password=password)
+        except Login.DoesNotExist:
+            login_record = None
+
+        if login_record:
+            # If the user exists in the Login model, authenticate them and log them in.
             user = authenticate(request, username=username, password=password)
             if user is None:
                 from django.contrib.auth.models import User
-                user = User.objects.create_user(username='agora', password='agora123')
+                user = User.objects.create_user(username=username, password=password)
             login(request, user)
             return redirect('index')
         else:
             messages.error(request, "Invalid login details. Please try again.")
+    
     return render(request, 'login.html')
 
 @login_required

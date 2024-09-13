@@ -1,6 +1,6 @@
 #admin.py
 from django.contrib import admin
-from .models import Status, Client, Command, Offre, Fournisseur, Product, Service, CommandeProduct, CommandeService
+from .models import Status, Client, Command, Offre, Fournisseur, Product, Service, CommandeProduct, CommandeService,Login
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('nom', 'prenom', 'entreprise', 'mail', 'date_creation')
@@ -51,7 +51,10 @@ class OffreAdmin(admin.ModelAdmin):
 
     # Optionally, customize form fields
     fields = ('command', 'profit_amount', 'date_creation')
-
+@admin.register(Login)
+class LoginAdmin(admin.ModelAdmin):
+    list_display = ('username', 'password')  # Fields to display in the admin list view
+    search_fields = ('username',)    
 
 admin.site.register(Status)
 admin.site.register(Client, ClientAdmin)
