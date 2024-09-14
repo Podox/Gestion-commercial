@@ -37,7 +37,7 @@
             </div>
             <div class="top-menu">
                 <ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="{% url 'logout' %}">Logout</a></li>
+                    <li><a class="logout" href="{% url 'logout' %}">Déconnexion</a></li>
                 </ul>
             </div>
         </header>
@@ -159,7 +159,7 @@
                                         <td>{{ commande.date_creation }}</td>
                                         <td>
                                            
-                                            <button class="btn btn-danger btn-xs delete-commande" data-id="{{ commande.id }}"><i class="fa fa-trash-o"></i> Delete</button>
+                                            <button class="btn btn-danger btn-xs delete-commande" data-id="{{ commande.id }}"><i class="fa fa-trash-o"></i> Supprimer</button>
                                         </td>
                                     </tr>
                                     {% endfor %}

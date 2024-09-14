@@ -33,7 +33,7 @@ def login_view(request):
             login(request, user)
             return redirect('index')
         else:
-            messages.error(request, "Invalid login details. Please try again.")
+            messages.error(request, "Informations de connexion invalides. Veuillez réessayer.")
     
     return render(request, 'login.html')
 

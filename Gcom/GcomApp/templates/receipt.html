@@ -16,7 +16,7 @@
             margin-bottom: 30px;
             padding: 20px 0;
             background-color: #ffffff;
-            border-bottom: 3px solid #007bff;
+            border-bottom: 3px solid #051B7D;
         }
         .receipt-header img {
             max-width: 120px;
@@ -49,7 +49,7 @@
             text-align: center;
         }
         .receipt-table th {
-            background-color: #007bff;
+            background-color: #051B7D;
             color: #ffffff;
             font-weight: bold;
         }
@@ -64,7 +64,7 @@
             border: 1px solid #e3e3e3;
         }
         .btn-primary {
-            background-color: #007bff;
+            background-color: #051B7D;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
@@ -126,7 +126,7 @@
                             <td>{{ product.product.name }}</td>
                             <td>{{ product.product.id }}</td>
                             <td>{{ product.quantity }}</td>
-                            <td>${{ product.product.price|floatformat:2 }}</td>
+                            <td>Dh{{ product.product.price|floatformat:2 }}</td>
                         </tr>
                     {% endfor %}
                     {% for service in services %}
@@ -134,14 +134,14 @@
                             <td>{{ service.service.name }}</td>
                             <td>{{ service.service.id }}</td>
                             <td>{{ service.quantity }}</td>
-                            <td>${{ service.service.price|floatformat:2 }}</td>
+                            <td>Dh{{ service.service.price|floatformat:2 }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <div class="receipt-total">
-                <p><strong>Frais supplémentaires :</strong> ${{ offre.profit_amount|floatformat:2 }}</p>
-                <p><strong>Total :</strong> ${{ total_with_profit|floatformat:2 }}</p>
+                <p><strong>Frais supplémentaires :</strong> Dh{{ offre.profit_amount|floatformat:2 }}</p>
+                <p><strong>Total :</strong> Dh{{ total_with_profit|floatformat:2 }}</p>
             </div>
         </section>
         <!-- Bouton d'impression -->

@@ -34,7 +34,7 @@
         <div class="container">
             <form class="form-login" method="post" action="{% url 'login' %}">
                 {% csrf_token %}
-                <h2 class="form-login-heading">sign in now</h2>
+                <h2 class="form-login-heading">Agora Technology</h2>
                 <div class="login-wrap">
                     {% if messages %}
                         <div class="alert alert-danger">
@@ -48,10 +48,12 @@
                     <input type="password" class="form-control" name="password" placeholder="Password">
                     <label class="checkbox">
                         <span class="pull-right">
-                            <a data-toggle="modal" href="#myModal"> Forgot Password?</a>
+                            <a data-toggle="modal" href="#myModal"> 
+                                Mot de passe oublié ?</a>
                         </span>
                     </label>
-                    <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
+                    <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> 
+                        SE CONNECTER</button>
                     
                     
                 
