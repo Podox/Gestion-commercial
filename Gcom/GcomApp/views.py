@@ -109,7 +109,7 @@ def client_timeline(request):
             client_events.append({
                 'date': offre.date_creation,
                 'title': f'Offre {offre.id}',
-                'description': offre.description
+                
             })
 
         client_events.sort(key=lambda x: x['date'], reverse=True)
